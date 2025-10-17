@@ -45,7 +45,7 @@ void UniversalJumpscareSprite::update(float dt) {
 			if (animSprite->getCurrentFrame() == animSprite->getFrameCount() - 1) {
 				unjus->stopAllActions();
 				animSprite->stop();
-				animSprite->setCurrentFrame(animSprite->getFrameCount());
+				animSprite->setCurrentFrame(animSprite->getFrameCount() - 1);
 				unjus->runAction(CCFadeOut::create(manager->jumpscareFadeOutTime));
 			}
 		}
