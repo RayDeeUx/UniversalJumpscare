@@ -51,8 +51,8 @@
 			"max": 5.00
 		},
 		"jumpscareFadeOutDelay": {
-			"name": "Jumpscare Image Delay Before Fade Out",
-			"description": "The time spent before fading out the jumpscare image.",
+			"name": "(ONLY Non-Animated) Jumpscare Image Delay Before Fade Out",
+			"description": "The time spent before fading out the jumpscare image.\n\n<cy>***__Apples to non-animated images ONLY.__***</c>",
 			"type": "float",
 			"default": 0.5,
 			"min": 0.000,

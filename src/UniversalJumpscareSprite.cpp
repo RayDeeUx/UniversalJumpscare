@@ -36,9 +36,17 @@ void UniversalJumpscareSprite::update(float dt) {
 			unjus->setOpacity(0);
 			manager->channel->stop();
 			if (manager->unjusIsAnimated) {
-				imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(manager->unjus);
+				imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(unjus);
 				animSprite->setCurrentFrame(0);
 				animSprite->stop();
+			}
+		} else if (manager->unjusIsAnimated) {
+			imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(unjus);
+			if (animSprite->getCurrentFrame() == animSprite->getFrameCount() - 1) {
+				unjus->stopAllActions();
+				animSprite->stop();
+				animSprite->setCurrentFrame(animSprite->getFrameCount());
+				unjus->runAction(CCFadeOut::create(manager->jumpscareFadeOutTime));
 			}
 		}
 		return;
@@ -52,8 +60,8 @@ void UniversalJumpscareSprite::update(float dt) {
 	}
 	unjus->setOpacity(255);
 
-	CCDelayTime* delay = CCDelayTime::create(manager->jumpscareFadeOutDelay);
-	CCFadeOut* fadeOut = CCFadeOut::create(manager->jumpscareFadeOutTime);
+	CCDelayTime* delay = CCDelayTime::create(!manager->unjusIsAnimated ? manager->jumpscareFadeOutDelay : 2123456789.f);
+	CCFadeOut* fadeOut = CCFadeOut::create(!manager->unjusIsAnimated ? manager->jumpscareFadeOutTime : 2123456789.f);
 	CCSequence* seqnce = CCSequence::create(delay, fadeOut, nullptr);
 	unjus->runAction(seqnce);
 
