@@ -1,0 +1,178 @@
+{
+	"geode": "4.7.0",
+	"gd": {
+		"win": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074",
+		"android": "2.2074"
+	},
+	"id": "raydeeux.universaljumpscare",
+	"name": "UniversalJumpscare",
+	"version": "v1.0.0",
+	"developer": "RayDeeUx",
+	"description": "A jumpscare that can pop up anywhere. Comes with GIF support!",
+	"repository": "https://github.com/RayDeeUx/UniversalJumpscare",
+	"settings": {
+		"enabled": {
+			"name": "Enabled",
+			"description": "Toggles the mod.",
+			"type": "bool",
+			"default": true
+		},
+		"jumpscare-image-header": {
+			"name": "Jumpscare Image",
+			"type": "title"
+		},
+		"jumpscareImage" : {
+			"name": "Jumpscare Image File",
+			"description": "Choose the image of your jumpscare here. GIFs, PNGs, and WEBPs supported!\n\n<c-ff0000>No, there will never be randomization support.</c>",
+			"type": "file",
+			"default": "{mod_resources_dir}/jumpscare.png"
+		},
+		"jumpscareImageFillMode": {
+			"name": "Jumpscare Image Fill Mode",
+			"description": "Select a fill mode for the jumpscare image.\n\n- Fit to Screen: Fits the image within the window while keeping the image's aspect ratio.\n- Fill Screen: The image fills the window while keeping the image's original aspect ratio.\n- Stretch to Fill Screen: Ignores the image's original aspect ratio to fill the entire game window.\n- Center: Places the image at the center of the screen (and uses the scale you selected in \"Sisyphus: Center Fill Mode Scale\".",
+			"type": "string",
+			"default": "Fit to Screen",
+			"one-of": [
+				"Fit to Screen",
+				"Fill Screen",
+				"Stretch to Fill Screen",
+				"Center",
+				"Leave As Is"
+			]
+		},
+		"jumpscareImageScale": {
+			"name": "Jumpscare Image Scale (for Center Fill Mode)",
+			"description": "The scale being used when using the <cl>Center</c> Fill Mode option from the <cl>\"Jumpscare Image Fill Mode\"</c> setting.",
+			"type": "float",
+			"default": 1.0,
+			"min": 0.01,
+			"max": 5.00
+		},
+		"jumpscareFadeOutDelay": {
+			"name": "Jumpscare Image Delay Before Fade Out",
+			"description": "The time spent before fading out the jumpscare image.",
+			"type": "float",
+			"default": 0.5,
+			"min": 0.000,
+			"max": 15.00
+		},
+		"jumpscareFadeOutTime": {
+			"name": "Jumpscare Image Fade Out Time",
+			"description": "The time spent fading out the jumpscare image.",
+			"type": "float",
+			"default": 0.5,
+			"min": 0.001,
+			"max": 15.00
+		},
+		"jumpscare-sfx-header": {
+			"name": "Jumpscare SFX",
+			"type": "title"
+		},
+		"jumpscareAudio" : {
+			"name": "Jumpscare SFX File",
+			"description": "Choose the file of your jumpscare SFX. Leave blank to disable. MP3s, OGGs, WAVs, FLACs, and OGAs supported!\n\n<c-ff0000>No, there will never be randomization support.</c>",
+			"type": "file",
+			"default": "{mod_resources_dir}/jumpscare.mp3"
+		},
+		"jumpscareAudioVolume": {
+			"name": "Jumpscare SFX Volume (%)",
+			"description": "Set the volume of your jumpscare SFX (as a percentage).",
+			"type": "int",
+			"default": 50,
+			"min": 0,
+			"max": 100
+		},
+		"jumpscare-probability-header": {
+			"name": "Jumpscare Probability",
+			"type": "title"
+		},
+		"probabilityNumerator": {
+			"name": "Probability (Numerator)",
+			"description": "The numerator for the likelihood of the jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
+			"type": "int",
+			"default": 1,
+			"min": 1,
+			"max": 1000000,
+			"control": {
+				"input": true,
+				"slider": false,
+				"arrows": true,
+				"big-arrows": true,
+				"arrow-step": 10000,
+				"big-arrow-step": 50000,
+				"slider-step": 0
+			}
+		},
+		"probabilityDenominator": {
+			"name": "Probability (Denominator)",
+			"description": "The denominator for the likelihood of the jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
+			"type": "int",
+			"default": 10000,
+			"min": 2,
+			"max": 1000000,
+			"control": {
+				"input": true,
+				"slider": false,
+				"arrows": true,
+				"big-arrows": true,
+				"arrow-step": 10000,
+				"big-arrow-step": 50000,
+				"slider-step": 0
+			}
+		},
+		"jumpscare-visibility-header": {
+			"name": "Jumpscare Visibility",
+			"type": "title"
+		},
+		"visibilityInPlayLayer": {
+			"name": "Visibility When Playing Levels",
+			"description": "Adjust the visibility of the jumpscare image when playing levels.",
+			"type": "string",
+			"default": "Always Visible",
+			"one-of": [
+				"Only Show When Dead",
+				"Always Visible",
+				"Only Hide When Dead",
+				"Always Hidden"
+			]
+		},
+		"hideInLevelEditorLayer": {
+			"name": "Hide When Editing Levels",
+			"description": "Adjust the visibility of the jumpscare image when editing levels.",
+			"type": "bool",
+			"default": true
+		},
+		"hideEverywhereElse": {
+			"name": "Hide Outside Of Levels",
+			"description": "Hides the the jumpscare image outside of levels.",
+			"type": "bool",
+			"default": true
+		},
+		"forceHideIfJumpscareStillActive": {
+			"name": "Force Hide if Jumpscare is Still Active When Switching Menus or Exiting/Entering Levels",
+			"type": "bool",
+			"default": true
+		}
+	},
+	"dependencies": {
+		"prevter.imageplus": ">=1.0.3"
+	},
+	"resources": {
+		"files": [
+			"resources/jumpscare.mp3"
+		],
+		"sprites": [
+			"resources/jumpscare.png"
+		]
+	},
+	"issues": {
+		"url": "https://discord.com/channels/911701438269386882/1205523212444639292",
+		"info": "Ping me <cl>(@erymanthus)</c> in the Geode SDK Discord server's <cl>#help</c> channel if you need help. <cr>DMs are NOT accepted.</c>"
+	},
+	"links": {
+		"community": "https://discord.gg/WqZBYdBWZW",
+		"homepage": "https://discord.com/channels/822510988409831486/1206371881222144020"
+	}
+}
