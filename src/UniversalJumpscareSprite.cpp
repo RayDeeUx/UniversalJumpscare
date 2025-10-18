@@ -42,7 +42,7 @@ void UniversalJumpscareSprite::update(float dt) {
 			}
 		} else if (manager->unjusIsAnimated) {
 			imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(unjus);
-			if (animSprite->getCurrentFrame() == animSprite->getFrameCount() - 1) {
+			if (animSprite->getCurrentFrame() == animSprite->getFrameCount() - 2) {
 				unjus->stopAllActions();
 				animSprite->stop();
 				animSprite->setCurrentFrame(animSprite->getFrameCount() - 1); // stop on last frame to avoid visually jarring transitons
