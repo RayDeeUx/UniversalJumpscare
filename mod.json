@@ -24,13 +24,13 @@
 			"type": "title"
 		},
 		"jumpscareImage" : {
-			"name": "Jumpscare Image File",
+			"name": "Image File",
 			"description": "Choose the image of your jumpscare here. GIFs, PNGs, and WEBPs supported!\n\n<c-ff0000>No, there will never be randomization support.</c>",
 			"type": "file",
 			"default": "{mod_resources_dir}/jumpscare.png"
 		},
 		"jumpscareImageFillMode": {
-			"name": "Jumpscare Image Fill Mode",
+			"name": "Image Fill Mode",
 			"description": "Select a fill mode for the jumpscare image.\n\n- Fit to Screen: Fits the image within the window while keeping the image's aspect ratio.\n- Fill Screen: The image fills the window while keeping the image's original aspect ratio.\n- Stretch to Fill Screen: Ignores the image's original aspect ratio to fill the entire game window.\n- Center: Places the image at the center of the screen (and uses the scale you selected in \"Sisyphus: Center Fill Mode Scale\".",
 			"type": "string",
 			"default": "Fit to Screen",
@@ -43,7 +43,7 @@
 			]
 		},
 		"jumpscareImageScale": {
-			"name": "Jumpscare Image Scale (for Center Fill Mode)",
+			"name": "Image Scale (for Center Fill Mode)",
 			"description": "The scale being used when using the <cl>Center</c> Fill Mode option from the <cl>\"Jumpscare Image Fill Mode\"</c> setting.",
 			"type": "float",
 			"default": 1.0,
@@ -51,7 +51,7 @@
 			"max": 5.00
 		},
 		"jumpscareFadeOutDelay": {
-			"name": "(ONLY Non-Animated) Jumpscare Image Delay Before Fade Out",
+			"name": "(Non-Animated) Image Delay Before Fade Out",
 			"description": "The time spent before fading out the jumpscare image.\n\n<cy>***__Apples to non-animated images ONLY.__***</c>",
 			"type": "float",
 			"default": 0.5,
@@ -59,7 +59,7 @@
 			"max": 15.00
 		},
 		"jumpscareFadeOutTime": {
-			"name": "Jumpscare Image Fade Out Time",
+			"name": "Image Fade Out Time",
 			"description": "The time spent fading out the jumpscare image.",
 			"type": "float",
 			"default": 0.5,
@@ -71,13 +71,13 @@
 			"type": "title"
 		},
 		"jumpscareAudio" : {
-			"name": "Jumpscare SFX File",
+			"name": "SFX File",
 			"description": "Choose the file of your jumpscare SFX. Leave blank to disable. MP3s, OGGs, WAVs, FLACs, and OGAs supported!\n\n<c-ff0000>No, there will never be randomization support.</c>",
 			"type": "file",
 			"default": "{mod_resources_dir}/jumpscare.mp3"
 		},
 		"jumpscareAudioVolume": {
-			"name": "Jumpscare SFX Volume (%)",
+			"name": "SFX Volume (%)",
 			"description": "Set the volume of your jumpscare SFX (as a percentage).",
 			"type": "int",
 			"default": 50,
