@@ -12,7 +12,7 @@
 	"developer": "RayDeeUx",
 	"description": "A jumpscare that can pop up anywhere. Comes with GIF support!",
 	"repository": "https://github.com/RayDeeUx/UniversalJumpscare",
-	"tags": [ "joke ],
+	"tags": [ "joke" ],
 	"settings": {
 		"enabled": {
 			"name": "Enabled",
