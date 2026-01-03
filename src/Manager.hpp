@@ -9,8 +9,10 @@
 
 using namespace geode::prelude;
 
-typedef std::unordered_map<std::filesystem::path, std::filesystem::path> ImageToOptionalAudio;
-typedef std::unordered_map<std::string, std::filesystem::path> StemToPath;
+typedef std::pair<std::string, std::filesystem::path> StemToPathPair;
+typedef std::pair<std::filesystem::path, std::filesystem::path> ImageToOptionalAudioPair;
+typedef std::vector<ImageToOptionalAudioPair> ImageToOptionalAudio;
+typedef std::vector<StemToPathPair> StemToPath;
 
 class Manager {
 
@@ -103,14 +105,24 @@ public:
 	}
 
 	static void tryFindingCorrespondingFile(const std::filesystem::path& path, const std::string& stem, StemToPath& knownFileNames, const bool trueIfImageFalseIfAudio, ImageToOptionalAudio& jumpscaresMap) {
-		auto correspondingJumpscareItem = knownFileNames.find(stem);
-		if (correspondingJumpscareItem != knownFileNames.end()) {
-			if (trueIfImageFalseIfAudio) jumpscaresMap.emplace(correspondingJumpscareItem->second, path);
-			else jumpscaresMap.emplace(path, correspondingJumpscareItem->second);
-			knownFileNames.erase(correspondingJumpscareItem);
-		} else {
-			knownFileNames.emplace(stem, path);
+		std::filesystem::path correspondingJumpscareItem {};
+		StemToPathPair thePairToRemove = std::make_pair(std::string{}, std::filesystem::path{});
+
+		for (const StemToPathPair& pair : knownFileNames) {
+			if (pair.second != path) continue;
+			correspondingJumpscareItem = pair.second;
+			thePairToRemove = pair;
+			break;
 		}
+
+		if (!std::filesystem::exists(correspondingJumpscareItem)) {
+			knownFileNames.push_back({stem, path});
+			return;
+		}
+
+		if (trueIfImageFalseIfAudio) jumpscaresMap.push_back({correspondingJumpscareItem, path});
+		else jumpscaresMap.push_back({path, correspondingJumpscareItem});
+		knownFileNames.erase(std::ranges::find(knownFileNames.begin(), knownFileNames.end(), thePairToRemove));
 	}
 
 	static void checkSubDirectoryForJumpscare(const auto& file, ImageToOptionalAudio& jumpscaresMap) {
@@ -126,7 +138,7 @@ public:
 			if (std::filesystem::exists(imageFilePath) && std::filesystem::exists(audioFilePath)) break;
 		}
 		if (std::filesystem::exists(imageFilePath)) {
-			jumpscaresMap.emplace(imageFilePath, std::filesystem::exists(audioFilePath) ? audioFilePath : std::filesystem::path{});
+			jumpscaresMap.push_back({imageFilePath, std::filesystem::exists(audioFilePath) ? audioFilePath : std::filesystem::path{}});
 		}
 	}
 
@@ -155,6 +167,6 @@ public:
 			}
 		}
 
-		for (const auto& [unused, path] : knownImageFiles) if (std::filesystem::exists(path)) jumpscaresMap.emplace(path, std::filesystem::path{});
+		for (const auto& [unused, path] : knownImageFiles) if (std::filesystem::exists(path)) jumpscaresMap.push_back({path, std::filesystem::path{}});
 	}
 };
