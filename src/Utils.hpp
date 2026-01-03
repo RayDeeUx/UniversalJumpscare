@@ -23,7 +23,7 @@ namespace Utils {
 
 	UniversalJumpscareSprite* getUNJUS();
 	void handleUNJUS();
-	void addUNJUS(const std::filesystem::path& imagePath = Mod::get()->getSettingValue<std::filesystem::path>("jumpscareSprite"));
+	void addUNJUS(const std::filesystem::path& imagePath = Mod::get()->getSettingValue<std::filesystem::path>("jumpscareImage"));
 	void removeUNJUS();
 	void setUNJUSScale(UniversalJumpscareSprite* unjus, const cocos2d::CCSize& win = CCDirector::get()->getWinSize());
 	void setupUNJUS(UniversalJumpscareSprite* unjus);
