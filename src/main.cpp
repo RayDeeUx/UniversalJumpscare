@@ -58,4 +58,14 @@ $on_mod(Loaded) {
 	listenForSettingChanges<double>("jumpscareFadeOutDelay", [](const double jumpscareFadeOutDelayNew) {
 		Manager::get()->jumpscareFadeOutDelay = std::clamp<float>(static_cast<float>(jumpscareFadeOutDelayNew), .0f, 15.f);
 	});
+	listenForSettingChanges<std::filesystem::path>("jumpscaresFolder", [](const std::filesystem::path&) {
+		log::info("Manager::get()->jumpscares.size() before: {}", Manager::get()->jumpscares.size());
+		Manager::loadOtherJumpscares();
+		log::info("Manager::get()->jumpscares.size() after: {}", Manager::get()->jumpscares.size());
+	});
+	listenForSettingChanges<std::filesystem::path>("additionalJumpscaresFolder", [](const std::filesystem::path&) {
+		log::info("Manager::get()->jumpscares.size() before: {}", Manager::get()->jumpscares.size());
+		Manager::loadOtherJumpscares();
+		log::info("Manager::get()->jumpscares.size() after: {}", Manager::get()->jumpscares.size());
+	});
 }

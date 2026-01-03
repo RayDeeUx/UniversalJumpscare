@@ -18,7 +18,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 
 		Utils::addUNJUS();
 
-		manager->loadStuff();
+		Manager::loadStuff();
 
 		return true;
 	}
