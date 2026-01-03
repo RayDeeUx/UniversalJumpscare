@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UniversalJumpscareSprite.hpp"
+#include "Utils.hpp"
 #include <random>
 
 // Manager.hpp structure by acaruso
@@ -42,7 +43,9 @@ public:
 	float jumpscareFadeOutTime = .5f;
 	float jumpscareFadeOutDelay = .5;
 
-	std::vector<std::pair<std::filesystem::path, std::filesystem::path>> jumpscares = {};
+	const std::unordered_set<std::string_view> audioExtensions = {".mp3", ".wav", ".ogg", ".oga", ".flac"};
+	const std::unordered_set<std::string_view> imageExtensions = {".png", ".webp", ".gif", ".jpeg", ".jpg", ".apng", ".jxl", ".qoi"};
+	std::unordered_map<std::filesystem::path, std::filesystem::path> jumpscares = {};
 
 	static Manager* get() {
 		if (!instance) instance = new Manager();
@@ -75,7 +78,70 @@ public:
 		return !(instance->dist(instance->rng) < instance->probability);
 	}
 
-	static void loadOtherProbabilities() {
+	static bool acceptableAudioFileExtension(const std::filesystem::path& audioFile) {
+		return instance->audioExtensions.contains(geode::utils::string::pathToString(audioFile));
+	}
+
+	static bool acceptableImageFileExtension(const std::filesystem::path& imageFile) {
+		return instance->imageExtensions.contains(geode::utils::string::pathToString(imageFile));
+	}
+
+	static void loadOtherJumpscares() {
 		if (!instance->jumpscares.empty()) instance->jumpscares.clear();
+		Manager::loadJumpscaresFrom(Mod::get()->getSettingValue<std::filesystem::path>("jumpscaresFolder"));
+		Manager::loadJumpscaresFrom(Mod::get()->getSettingValue<std::filesystem::path>("additionalJumpscaresFolder"));
+	}
+
+	static void tryFindingCorrespondingFile(const std::filesystem::path& path, const std::string& stem, std::unordered_map<std::string, std::filesystem::path>& knownFileNames, const bool trueIfImageFalseIfAudio) {
+		auto correspondingJumpscareItem = knownFileNames.find(stem);
+		if (correspondingJumpscareItem != knownFileNames.end()) {
+			if (trueIfImageFalseIfAudio) instance->jumpscares.emplace(correspondingJumpscareItem->second, path);
+			else instance->jumpscares.emplace(path, correspondingJumpscareItem->second);
+			knownFileNames.erase(correspondingJumpscareItem);
+		} else {
+			knownFileNames.emplace(stem, path);
+		}
+	}
+
+	static void checkSubDirectoryForJumpscare(const auto& file) {
+		std::filesystem::path imageFilePath {};
+		std::filesystem::path audioFilePath {};
+		for (const auto& subFile : std::filesystem::directory_iterator(file.path())) {
+			if (std::filesystem::is_directory(subFile)) continue;
+			const std::string& stemAsString = string::pathToString(subFile.path().stem());
+			if (!std::filesystem::exists(imageFilePath) && stemAsString == "jumpscare" && Manager::acceptableImageFileExtension(subFile.path().extension())) imageFilePath = subFile.path();
+			if (!std::filesystem::exists(audioFilePath) && stemAsString == "jumpscareAudio" && Manager::acceptableAudioFileExtension(subFile.path().extension())) audioFilePath = subFile.path();
+			if (std::filesystem::exists(imageFilePath) && std::filesystem::exists(audioFilePath)) break;
+		}
+		if (std::filesystem::exists(imageFilePath)) {
+			instance->jumpscares.emplace(imageFilePath, std::filesystem::exists(audioFilePath) ? audioFilePath : std::filesystem::path{});
+		}
+	}
+
+	static void loadJumpscaresFrom(const std::filesystem::path& folder) {
+		if (!std::filesystem::exists(folder) || !std::filesystem::is_directory(folder)) return;
+
+		std::unordered_map<std::string, std::filesystem::path> knownImageFiles;
+		std::unordered_map<std::string, std::filesystem::path> knownAudioFiles;
+
+		for (const auto& file : std::filesystem::directory_iterator(folder)) {
+			if (!file.exists()) continue;
+
+			if (std::filesystem::is_directory(file)) {
+				Manager::checkSubDirectoryForJumpscare(file);
+			} else if (std::filesystem::is_regular_file(file)) {
+				const std::filesystem::path& path = file.path();
+				const std::filesystem::path& extension = path.extension();
+				const std::string& stem = geode::utils::string::pathToString(path.stem());
+
+				if (Manager::acceptableImageFileExtension(extension)) {
+					Manager::tryFindingCorrespondingFile(path, stem, knownAudioFiles, false);
+				} else if (Manager::acceptableAudioFileExtension(extension)) {
+					Manager::tryFindingCorrespondingFile(path, stem, knownImageFiles, true);
+				}
+			}
+		}
+
+		for (const auto& [unused, path] : knownImageFiles) if (std::filesystem::exists(path)) instance->jumpscares.emplace(path, std::filesystem::path{});
 	}
 };

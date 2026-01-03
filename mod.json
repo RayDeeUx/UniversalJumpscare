@@ -31,13 +31,13 @@
 		},
 		"jumpscaresFolder": {
 			"name": "Jumpscares Folder",
-			"description": "Choose your folder of jumpscares here.\n\nThere are several ways to register a jumpscare:\n- An image file with no corresponding audio file (ex:  `jumpscare.png` )\n- An image file with an audio file sharing the same name (ex:  `jumpscareOne.gif`  +  `jumpscareOne.mp3`  )\n- A folder (within the folder you selected for this setting) containing the files  `jumpscare.png`  for the jumpscare image, and  `jumpscareAudio.mp3`  for the jumpscare audio (this third option is specifically for people who also use Weebify's Jumpscare mod, which only happens when playing levels)",
+			"description": "Choose your folder of jumpscares here.\n\nThere are several ways to register a jumpscare:\n- An image file with no corresponding audio file (ex:  `jumpscare.png`  )\n- An image file with an audio file sharing the same name (ex:  `jumpscareOne.gif`  +  `jumpscareOne.mp3`  )\n- A folder (within the folder you selected for this setting) containing the files  `jumpscare.png`  for the jumpscare image, and  `jumpscareAudio.mp3`  for the jumpscare audio (this third option is specifically for people who also use Weebify's Jumpscare mod, which only happens when playing levels)",
 			"type": "folder",
 			"default": "{mod_config_dir}"
 		},
 		"additionalJumpscaresFolder": {
 			"name": "Additional Jumpscares Folder",
-			"description": "Choose your folder of additional jumpscares here. If this setting is empty, it will be ignored.\n\nThere are several ways to register a jumpscare:\n- An image file with no corresponding audio file (ex:  `jumpscare.png` )\n- An image file with an audio file sharing the same name (ex:  `jumpscareOne.gif`  +  `jumpscareOne.mp3`  )\n- A folder (within the folder you selected for this setting) containing the files  `jumpscare.png`  for the jumpscare image, and  `jumpscareAudio.mp3`  for the jumpscare audio (this third option is specifically for people who also use Weebify's Jumpscare mod, where jumpscares only happen when dying inside levels)",
+			"description": "Choose your folder of additional jumpscares here. If this setting is empty, it will be ignored.\n\nThere are several ways to register a jumpscare:\n- An image file with no corresponding audio file (ex:  `jumpscare.png`  )\n- An image file with an audio file sharing the same name (ex:  `jumpscareOne.gif`  +  `jumpscareOne.mp3`  )\n- A folder (within the folder you selected for this setting) containing the files  `jumpscare.png`  for the jumpscare image, and  `jumpscareAudio.mp3`  for the jumpscare audio (this third option is specifically for people who also use Weebify's Jumpscare mod, where jumpscares only happen when dying inside levels)",
 			"type": "folder",
 			"default": ""
 		},

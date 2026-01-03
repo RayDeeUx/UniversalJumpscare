@@ -18,9 +18,6 @@ namespace Utils {
 	Mod* getMod(const std::string&);
 	std::string getModVersion(const Mod*);
 
-	bool acceptableAudioFileExtension(const std::filesystem::path&);
-	bool acceptableImageFileExtension(const std::filesystem::path&);
-
 	UniversalJumpscareSprite* getUNJUS();
 	void handleUNJUS();
 	void addUNJUS(const std::filesystem::path& imagePath = Mod::get()->getSettingValue<std::filesystem::path>("jumpscareImage"));
@@ -29,7 +26,4 @@ namespace Utils {
 	void setupUNJUS(UniversalJumpscareSprite* unjus);
 	void addChroma(UniversalJumpscareSprite* unjus = Utils::getUNJUS());
 	std::string chooseFontFile(int64_t font);
-	
-	static const std::unordered_set<std::string_view> audioExtensions = {".mp3", ".wav", ".ogg", ".oga", ".flac"};
-	static const std::unordered_set<std::string_view> imageExtensions = {".png", ".webp", ".gif", ".jpeg", ".jpg", ".apng", ".jxl", ".qoi"};
 }
