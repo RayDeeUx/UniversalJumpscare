@@ -54,6 +54,9 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float)
 
 	if (!unjus->isVisible() || Manager::shouldNotJumpscare()) return;
 	if (manager->unjusIsAnimated) {
+		bool isPlayingAudio = false;
+		Manager::get()->channel->isPlaying(&isPlayingAudio);
+		if (isPlayingAudio) Manager::get()->channel->stop();
 		imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(manager->unjus);
 		animSprite->setCurrentFrame(0);
 		animSprite->play();
