@@ -91,8 +91,8 @@ public:
 
 	static void loadOtherJumpscares() {
 		if (!instance->jumpscares.empty()) instance->jumpscares.clear();
-		Manager::loadJumpscaresFrom(Mod::get()->getSettingValue<std::filesystem::path>("jumpscaresFolder"));
-		Manager::loadJumpscaresFrom(Mod::get()->getSettingValue<std::filesystem::path>("additionalJumpscaresFolder"));
+		Manager::loadJumpscaresFrom(Mod::get()->getSettingValue<std::filesystem::path>("jumpscaresFolder"), instance->jumpscares);
+		Manager::loadJumpscaresFrom(Mod::get()->getSettingValue<std::filesystem::path>("additionalJumpscaresFolder"), instance->jumpscares);
 	}
 
 	static void tryFindingCorrespondingFile(const std::filesystem::path& path, const std::string& stem, std::unordered_map<std::string, std::filesystem::path>& knownFileNames, const bool trueIfImageFalseIfAudio, std::unordered_map<std::filesystem::path, std::filesystem::path>& jumpscaresMap) {
@@ -122,7 +122,7 @@ public:
 		}
 	}
 
-	static void loadJumpscaresFrom(const std::filesystem::path& folder) {
+	static void loadJumpscaresFrom(const std::filesystem::path& folder, std::unordered_map<std::filesystem::path, std::filesystem::path>& jumpscaresMap) {
 		if (!std::filesystem::exists(folder) || !std::filesystem::is_directory(folder)) return;
 
 		std::unordered_map<std::string, std::filesystem::path> knownImageFiles;
@@ -140,13 +140,13 @@ public:
 				log::info("stemAsString: {}", stemAsString);
 
 				if (Manager::acceptableImageFileExtension(extension)) {
-					Manager::tryFindingCorrespondingFile(path, stemAsString, knownAudioFiles, false, instance->jumpscares);
+					Manager::tryFindingCorrespondingFile(path, stemAsString, knownAudioFiles, false, jumpscaresMap);
 				} else if (Manager::acceptableAudioFileExtension(extension)) {
-					Manager::tryFindingCorrespondingFile(path, stemAsString, knownImageFiles, true, instance->jumpscares);
+					Manager::tryFindingCorrespondingFile(path, stemAsString, knownImageFiles, true, jumpscaresMap);
 				}
 			}
 		}
 
-		for (const auto& [unused, path] : knownImageFiles) if (std::filesystem::exists(path)) instance->jumpscares.emplace(path, std::filesystem::path{});
+		for (const auto& [unused, path] : knownImageFiles) if (std::filesystem::exists(path)) jumpscaresMap.emplace(path, std::filesystem::path{});
 	}
 };
