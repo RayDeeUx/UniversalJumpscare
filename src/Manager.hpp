@@ -118,10 +118,11 @@ public:
 		std::filesystem::path audioFilePath {};
 		for (const auto& subFile : std::filesystem::directory_iterator(file.path())) {
 			if (std::filesystem::is_directory(subFile)) continue;
-			const std::string& stemAsString = string::pathToString(subFile.path().stem());
+			const std::filesystem::path& subFilePath = subFile.path();
+			const std::string& stemAsString = string::pathToString(subFilePath.stem());
 			log::info("stemAsString [subdirectory]: {}", stemAsString);
-			if (!std::filesystem::exists(imageFilePath) && stemAsString == "jumpscare" && Manager::acceptableImageFileExtension(subFile.path().extension())) imageFilePath = subFile.path();
-			if (!std::filesystem::exists(audioFilePath) && stemAsString == "jumpscareAudio" && Manager::acceptableAudioFileExtension(subFile.path().extension())) audioFilePath = subFile.path();
+			if (!std::filesystem::exists(imageFilePath) && stemAsString == "jumpscare" && Manager::acceptableImageFileExtension(subFilePath.extension())) imageFilePath = subFilePath;
+			if (!std::filesystem::exists(audioFilePath) && stemAsString == "jumpscareAudio" && Manager::acceptableAudioFileExtension(subFilePath.extension())) audioFilePath = subFilePath;
 			if (std::filesystem::exists(imageFilePath) && std::filesystem::exists(audioFilePath)) break;
 		}
 		if (std::filesystem::exists(imageFilePath)) {
