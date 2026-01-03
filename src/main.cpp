@@ -5,7 +5,8 @@
 using namespace geode::prelude;
 
 $on_mod(Loaded) {
-	Manager::get()->system->createSound(geode::utils::string::pathToString(Mod::get()->getSettingValue<std::filesystem::path>("jumpscareAudio")).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
+	const std::filesystem::path& jumpscareAudio = Mod::get()->getSettingValue<std::filesystem::path>("jumpscareAudio");
+	if (std::filesystem::exists(jumpscareAudio)) Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudio).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
 	Manager::get()->channel->setVolume(static_cast<float>(std::clamp<int>(static_cast<int>(Mod::get()->getSettingValue<int64_t>("jumpscareAudioVolume")), 0, 100)) / 100.f);
 
 	listenForSettingChanges<bool>("enabled", [](bool isEnabled) {
@@ -44,7 +45,8 @@ $on_mod(Loaded) {
 		Manager::get()->visibilityInPlayLayer = geode::utils::string::toLower(visibilityInPlayLayerNew);
 	});
 	listenForSettingChanges<std::filesystem::path>("jumpscareAudio", [](const std::filesystem::path& jumpscareAudioNew) {
-		Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudioNew).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
+		Manager::get()->sound->release();
+		if (std::filesystem::exists(jumpscareAudioNew)) Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudioNew).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
 	});
 	listenForSettingChanges<int64_t>("jumpscareAudioVolume", [](const int64_t jumpscareAudioVolumeNew) {
 		Manager::get()->jumpscareAudioVolume = static_cast<float>(std::clamp<int>(static_cast<int>(jumpscareAudioVolumeNew), 0, 100)) / 100.f;
