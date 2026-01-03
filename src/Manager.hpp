@@ -132,12 +132,12 @@ public:
 			if (std::filesystem::is_directory(subFile)) continue;
 			const std::filesystem::path& subFilePath = subFile.path();
 			const std::string& stemAsString = string::pathToString(subFilePath.stem());
-			log::info("stemAsString [subdirectory]: {}", stemAsString);
-			if (!std::filesystem::exists(imageFilePath) && stemAsString == "jumpscare" && Manager::acceptableImageFileExtension(subFilePath.extension())) imageFilePath = subFilePath;
-			if (!std::filesystem::exists(audioFilePath) && stemAsString == "jumpscareAudio" && Manager::acceptableAudioFileExtension(subFilePath.extension())) audioFilePath = subFilePath;
+			if (!std::filesystem::exists(subFilePath) && stemAsString == "jumpscare" && Manager::acceptableImageFileExtension(subFilePath.extension())) imageFilePath = subFilePath;
+			if (!std::filesystem::exists(subFilePath) && stemAsString == "jumpscareAudio" && Manager::acceptableAudioFileExtension(subFilePath.extension())) audioFilePath = subFilePath;
 			if (std::filesystem::exists(imageFilePath) && std::filesystem::exists(audioFilePath)) break;
 		}
 		if (std::filesystem::exists(imageFilePath)) {
+			log::info("line 143");
 			jumpscaresMap.push_back({imageFilePath, std::filesystem::exists(audioFilePath) ? audioFilePath : std::filesystem::path{}});
 		}
 	}
@@ -157,7 +157,6 @@ public:
 				const std::filesystem::path& path = file.path();
 				const std::filesystem::path& extension = path.extension();
 				const std::string& stemAsString = geode::utils::string::pathToString(path.stem());
-				log::info("stemAsString: {}", stemAsString);
 
 				if (Manager::acceptableImageFileExtension(extension)) {
 					Manager::tryFindingCorrespondingFile(path, stemAsString, knownAudioFiles, false, jumpscaresMap);
