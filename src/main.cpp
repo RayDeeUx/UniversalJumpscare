@@ -45,6 +45,7 @@ $on_mod(Loaded) {
 		Manager::get()->visibilityInPlayLayer = geode::utils::string::toLower(visibilityInPlayLayerNew);
 	});
 	listenForSettingChanges<std::filesystem::path>("jumpscareAudio", [](const std::filesystem::path& jumpscareAudioNew) {
+		Manager::get()->channel->stop();
 		Manager::get()->sound->release();
 		if (std::filesystem::exists(jumpscareAudioNew)) Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudioNew).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
 	});
