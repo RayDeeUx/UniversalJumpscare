@@ -26,6 +26,8 @@ public:
 	int64_t denominator = 10000;
 	double probability = static_cast<double>(numerator) / static_cast<double>(denominator);
 
+	double probabilityFrequency = .016667;
+
 	UniversalJumpscareSprite* unjus = nullptr;
 	bool unjusIsAnimated = false;
 
@@ -45,7 +47,7 @@ public:
 		return instance;
 	}
 
-	void loadStuff() {
+	void loadStuff() const {
 		this->instance->hideInLevelEditorLayer = Mod::get()->getSettingValue<bool>("hideInLevelEditorLayer");
 		this->instance->hideEverywhereElse = Mod::get()->getSettingValue<bool>("hideEverywhereElse");
 		this->instance->forceHideIfJumpscareStillActive = Mod::get()->getSettingValue<bool>("forceHideIfJumpscareStillActive");
@@ -53,6 +55,7 @@ public:
 		this->instance->jumpscareAudioVolume = static_cast<float>(std::clamp<int>(static_cast<int>(Mod::get()->getSettingValue<int64_t>("jumpscareAudioVolume")), 0, 100)) / 100.f;
 		this->instance->jumpscareFadeOutTime = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutTime")), .01f, 15.f);
 		this->instance->jumpscareFadeOutDelay = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutDelay")), .0f, 15.f);
+		this->instance->probabilityFrequency = std::clamp<double>(Mod::get()->getSettingValue<double>("probabilityFrequency"), .016667, 1000);
 	}
 
 	static void calculateProbability(int64_t numerator, int64_t denominator) {

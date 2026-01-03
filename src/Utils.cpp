@@ -114,7 +114,7 @@ namespace Utils {
 		unjus->setTag(10162025);
 		unjus->setID("universal-jumpscare-sprite"_spr);
 		Manager::get()->unjusIsAnimated = imgp::AnimatedSprite::from(unjus)->isAnimated();
-		unjus->scheduleUpdate();
+		unjus->schedule(schedule_selector(UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere), static_cast<float>(Manager::get()->probabilityFrequency));
 	}
 
 }

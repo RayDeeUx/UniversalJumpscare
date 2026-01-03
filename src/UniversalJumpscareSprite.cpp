@@ -19,7 +19,7 @@ bool UniversalJumpscareSprite::initWithFile(const char* content) {
 	return true;
 }
 
-void UniversalJumpscareSprite::update(float dt) {
+void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float) {
 	UniversalJumpscareSprite* unjus = Utils::getUNJUS();
 	if (!unjus) return;
 

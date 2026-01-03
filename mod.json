@@ -123,6 +123,23 @@
 				"slider-step": 0
 			}
 		},
+		"probabilityFrequency": {
+			"name": "Frequency to Check Probability",
+			"description": "How frequently (in seconds) the mod checks if it is time for the jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
+			"type": "float",
+			"default": 0.016667,
+			"min": 0.016667,
+			"max": 1000.000,
+			"control": {
+				"input": true,
+				"slider": false,
+				"arrows": true,
+				"big-arrows": true,
+				"arrow-step": 250,
+				"big-arrow-step": 500,
+				"slider-step": 0
+			}
+		},
 		"jumpscare-visibility-header": {
 			"name": "Jumpscare Visibility",
 			"type": "title"
