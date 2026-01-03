@@ -9,6 +9,9 @@
 
 using namespace geode::prelude;
 
+typedef std::unordered_map<std::filesystem::path, std::filesystem::path> ImageToOptionalAudio;
+typedef std::unordered_map<std::string, std::filesystem::path> StemToPath;
+
 class Manager {
 
 protected:
@@ -45,7 +48,7 @@ public:
 
 	const std::unordered_set<std::string_view> audioExtensions = {".mp3", ".wav", ".ogg", ".oga", ".flac"};
 	const std::unordered_set<std::string_view> imageExtensions = {".png", ".webp", ".gif", ".jpeg", ".jpg", ".apng", ".jxl", ".qoi"};
-	std::unordered_map<std::filesystem::path, std::filesystem::path> jumpscares = {};
+	ImageToOptionalAudio jumpscares = {};
 
 	static Manager* get() {
 		if (!instance) instance = new Manager();
@@ -93,9 +96,13 @@ public:
 		if (!instance->jumpscares.empty()) instance->jumpscares.clear();
 		Manager::loadJumpscaresFrom(Mod::get()->getSettingValue<std::filesystem::path>("jumpscaresFolder"), instance->jumpscares);
 		Manager::loadJumpscaresFrom(Mod::get()->getSettingValue<std::filesystem::path>("additionalJumpscaresFolder"), instance->jumpscares);
+		for (const auto&[imageFile, audioFile] : instance->jumpscares) {
+			log::info("imageFile: {}", geode::utils::string::pathToString(imageFile));
+			log::info("audioFile: {}", geode::utils::string::pathToString(audioFile));
+		}
 	}
 
-	static void tryFindingCorrespondingFile(const std::filesystem::path& path, const std::string& stem, std::unordered_map<std::string, std::filesystem::path>& knownFileNames, const bool trueIfImageFalseIfAudio, std::unordered_map<std::filesystem::path, std::filesystem::path>& jumpscaresMap) {
+	static void tryFindingCorrespondingFile(const std::filesystem::path& path, const std::string& stem, StemToPath& knownFileNames, const bool trueIfImageFalseIfAudio, ImageToOptionalAudio& jumpscaresMap) {
 		auto correspondingJumpscareItem = knownFileNames.find(stem);
 		if (correspondingJumpscareItem != knownFileNames.end()) {
 			if (trueIfImageFalseIfAudio) jumpscaresMap.emplace(correspondingJumpscareItem->second, path);
@@ -106,7 +113,7 @@ public:
 		}
 	}
 
-	static void checkSubDirectoryForJumpscare(const auto& file, std::unordered_map<std::filesystem::path, std::filesystem::path>& jumpscaresMap) {
+	static void checkSubDirectoryForJumpscare(const auto& file, ImageToOptionalAudio& jumpscaresMap) {
 		std::filesystem::path imageFilePath {};
 		std::filesystem::path audioFilePath {};
 		for (const auto& subFile : std::filesystem::directory_iterator(file.path())) {
@@ -122,11 +129,11 @@ public:
 		}
 	}
 
-	static void loadJumpscaresFrom(const std::filesystem::path& folder, std::unordered_map<std::filesystem::path, std::filesystem::path>& jumpscaresMap) {
+	static void loadJumpscaresFrom(const std::filesystem::path& folder, ImageToOptionalAudio& jumpscaresMap) {
 		if (!std::filesystem::exists(folder) || !std::filesystem::is_directory(folder)) return;
 
-		std::unordered_map<std::string, std::filesystem::path> knownImageFiles;
-		std::unordered_map<std::string, std::filesystem::path> knownAudioFiles;
+		StemToPath knownImageFiles = {};
+		StemToPath knownAudioFiles = {};
 
 		for (const auto& file : std::filesystem::directory_iterator(folder)) {
 			if (!std::filesystem::exists(file)) continue;
