@@ -28,7 +28,13 @@
 			"name": "Image File",
 			"description": "Choose the image of your jumpscare here. GIFs, PNGs, and WEBPs supported!\n\n<c-ff0000>No, there will never be randomization support.</c>",
 			"type": "file",
-			"default": "{mod_resources_dir}/jumpscare.png"
+			"default": "{mod_resources_dir}/jumpscare.png",
+			"filters": [
+				{
+					"files": [ "*.png", "*.webp", "*.gif", "*.jpeg", "*.jpg", "*.apng", "*.jxl", "*.qoi" ],
+					"description": "Image files"
+				}
+			]
 		},
 		"jumpscareImageFillMode": {
 			"name": "Image Fill Mode",
@@ -75,7 +81,13 @@
 			"name": "SFX File",
 			"description": "Choose the file of your jumpscare SFX. Leave blank to disable. MP3s, OGGs, WAVs, FLACs, and OGAs supported!\n\n<c-ff0000>No, there will never be randomization support.</c>",
 			"type": "file",
-			"default": "{mod_resources_dir}/jumpscare.mp3"
+			"default": "{mod_resources_dir}/jumpscare.mp3",
+			"filters": [
+				{
+					"files": [ "*.mp3", "*.wav", "*.ogg", "*.oga", "*.flac" ],
+					"description": "Audio files"
+				}
+			]
 		},
 		"jumpscareAudioVolume": {
 			"name": "SFX Volume (%)",

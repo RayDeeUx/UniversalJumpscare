@@ -42,23 +42,25 @@ public:
 	float jumpscareFadeOutTime = .5f;
 	float jumpscareFadeOutDelay = .5;
 
+	std::vector<std::pair<std::filesystem::path, std::filesystem::path>> jumpscares = {};
+
 	static Manager* get() {
 		if (!instance) instance = new Manager();
 		return instance;
 	}
 
-	void loadStuff() const {
-		this->instance->hideInLevelEditorLayer = Mod::get()->getSettingValue<bool>("hideInLevelEditorLayer");
-		this->instance->hideEverywhereElse = Mod::get()->getSettingValue<bool>("hideEverywhereElse");
-		this->instance->forceHideIfJumpscareStillActive = Mod::get()->getSettingValue<bool>("forceHideIfJumpscareStillActive");
-		this->instance->visibilityInPlayLayer = geode::utils::string::toLower(Mod::get()->getSettingValue<std::string>("visibilityInPlayLayer"));
-		this->instance->jumpscareAudioVolume = static_cast<float>(std::clamp<int>(static_cast<int>(Mod::get()->getSettingValue<int64_t>("jumpscareAudioVolume")), 0, 100)) / 100.f;
-		this->instance->jumpscareFadeOutTime = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutTime")), .01f, 15.f);
-		this->instance->jumpscareFadeOutDelay = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutDelay")), .0f, 15.f);
-		this->instance->probabilityFrequency = std::clamp<double>(Mod::get()->getSettingValue<double>("probabilityFrequency"), .016667, 1000);
+	static void loadStuff() {
+		instance->hideInLevelEditorLayer = Mod::get()->getSettingValue<bool>("hideInLevelEditorLayer");
+		instance->hideEverywhereElse = Mod::get()->getSettingValue<bool>("hideEverywhereElse");
+		instance->forceHideIfJumpscareStillActive = Mod::get()->getSettingValue<bool>("forceHideIfJumpscareStillActive");
+		instance->visibilityInPlayLayer = geode::utils::string::toLower(Mod::get()->getSettingValue<std::string>("visibilityInPlayLayer"));
+		instance->jumpscareAudioVolume = static_cast<float>(std::clamp<int>(static_cast<int>(Mod::get()->getSettingValue<int64_t>("jumpscareAudioVolume")), 0, 100)) / 100.f;
+		instance->jumpscareFadeOutTime = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutTime")), .01f, 15.f);
+		instance->jumpscareFadeOutDelay = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutDelay")), .0f, 15.f);
+		instance->probabilityFrequency = std::clamp<double>(Mod::get()->getSettingValue<double>("probabilityFrequency"), .016667, 1000);
 	}
 
-	static void calculateProbability(int64_t numerator, int64_t denominator) {
+	static void calculateProbability(const int64_t numerator, const int64_t denominator) {
 		instance->numerator = std::clamp<int64_t>(numerator, 1, 1000000);
 		instance->denominator = std::clamp<int64_t>(denominator, 2, 1000000);
 		instance->probability = static_cast<double>(instance->numerator) / static_cast<double>(instance->denominator);
@@ -71,5 +73,9 @@ public:
 
 	static bool shouldNotJumpscare() {
 		return !(instance->dist(instance->rng) < instance->probability);
+	}
+
+	static void loadOtherProbabilities() {
+		if (!instance->jumpscares.empty()) instance->jumpscares.clear();
 	}
 };

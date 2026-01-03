@@ -25,6 +25,14 @@ namespace Utils {
 
 	std::string getModVersion(const Mod* mod) { return mod->getVersion().toNonVString(); }
 
+	bool acceptableAudioFileExtension(const std::filesystem::path& audioFile) {
+		return audioExtensions.contains(geode::utils::string::pathToString(audioFile));
+	}
+
+	bool acceptableImageFileExtension(const std::filesystem::path& imageFile) {
+		return imageExtensions.contains(geode::utils::string::pathToString(imageFile));
+	}
+
 	UniversalJumpscareSprite* getUNJUS() { return Manager::get()->unjus; }
 	
 	void handleUNJUS() {
