@@ -1,11 +1,9 @@
 #pragma once
 
-class UniversalJumpscareSprite : public cocos2d::CCSprite {
+class UniversalJumpscareSprite final : public cocos2d::CCSprite {
 protected:
-	bool init(const char*, const char*);
-
+	bool initWithFile(const char*) override;
+	void update(float) override;
 public:
 	static UniversalJumpscareSprite* create(const char*);
-	bool initWithFile(const char*);
-	void update(float);
 };
