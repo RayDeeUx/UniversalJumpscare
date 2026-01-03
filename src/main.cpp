@@ -13,9 +13,9 @@ $on_mod(Loaded) {
 		if (!isEnabled && unjus) return Utils::removeUNJUS();
 		if (isEnabled && !unjus) return Utils::addUNJUS();
 	});
-	listenForSettingChanges<std::filesystem::path>("jumpscareImage", [](const std::filesystem::path&) {
+	listenForSettingChanges<std::filesystem::path>("jumpscareImage", [](const std::filesystem::path& path) {
 		Utils::removeUNJUS();
-		Utils::addUNJUS();
+		Utils::addUNJUS(path);
 	});
 	listenForSettingChanges<int64_t>("probabilityNumerator", [](int64_t newNumerator) {
 		Manager::calculateProbability(newNumerator, Mod::get()->getSettingValue<int64_t>("probabilityDenominator"));
