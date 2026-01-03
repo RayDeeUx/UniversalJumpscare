@@ -20,6 +20,10 @@
 			"type": "bool",
 			"default": true
 		},
+		"random-jumpscare-header": {
+			"name": "Jumpscare Randomization",
+			"type": "title"
+		},
 		"jumpscare-image-header": {
 			"name": "Jumpscare Image",
 			"type": "title"
@@ -147,8 +151,8 @@
 				"slider": false,
 				"arrows": true,
 				"big-arrows": true,
-				"arrow-step": 250,
-				"big-arrow-step": 500,
+				"arrow-step": 1,
+				"big-arrow-step": 25,
 				"slider-step": 0
 			}
 		},
