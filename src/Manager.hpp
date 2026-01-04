@@ -160,7 +160,6 @@ public:
 				Manager::checkSubDirectoryForJumpscare(file, instance->jumpscares);
 			} else if (std::filesystem::is_regular_file(file)) {
 				const std::filesystem::path& path = file.path();
-				const std::filesystem::path& extension = path.extension();
 				const std::string& stemAsString = geode::utils::string::pathToString(path.stem());
 
 				if (Manager::acceptableImageFileExtension(path)) {
