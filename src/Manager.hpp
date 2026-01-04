@@ -150,9 +150,17 @@ public:
 				const std::string& stemAsString = geode::utils::string::pathToString(path.stem());
 
 				if (Manager::acceptableImageFileExtension(path)) {
-					Manager::tryFindingCorrespondingFile(path, stemAsString, knownAudioFiles, true, jumpscaresMap);
+					Manager::tryFindingCorrespondingFile(path, stemAsString, knownImageFiles, true, jumpscaresMap);
 				} else if (Manager::acceptableAudioFileExtension(path)) {
-					Manager::tryFindingCorrespondingFile(path, stemAsString, knownImageFiles, false, jumpscaresMap);
+					Manager::tryFindingCorrespondingFile(path, stemAsString, knownAudioFiles, false, jumpscaresMap);
+				}
+
+				for (const auto& [stem, path] : knownAudioFiles) {
+					if (!knownImageFiles.contains(stem)) continue;
+					if (!std::filesystem::exists(knownImageFiles.find(stem)->second)) continue;
+					jumpscaresMap.emplace(knownImageFiles.find(stem)->second, path);
+					knownImageFiles.erase(knownImageFiles.find(stem));
+					knownAudioFiles.erase(knownAudioFiles.find(stem));
 				}
 			}
 		}
