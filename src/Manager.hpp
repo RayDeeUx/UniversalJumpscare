@@ -192,7 +192,7 @@ public:
 		}
 	}
 
-	std::unordered_map<std::filesystem::path, std::filesystem::path>::const_iterator pickRandomJumpscare(const std::unordered_map<std::filesystem::path, std::filesystem::path>& jumpscares) {
+	static std::unordered_map<std::filesystem::path, std::filesystem::path>::const_iterator pickRandomJumpscare(const std::unordered_map<std::filesystem::path, std::filesystem::path>& jumpscares) {
 		if (jumpscares.empty()) return jumpscares.end();
 
 		std::uniform_int_distribution<std::size_t> dist(0, jumpscares.size() - 1);
