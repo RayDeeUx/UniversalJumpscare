@@ -40,6 +40,7 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float)
 				animSprite->setCurrentFrame(0);
 				animSprite->stop();
 			}
+			if (manager->randomizeJumpscares) unjus->setTag(20260104);
 		} else if (manager->unjusIsAnimated) {
 			imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(unjus);
 			if (animSprite->getCurrentFrame() == animSprite->getFrameCount() - 2) {
@@ -48,7 +49,27 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float)
 				animSprite->setCurrentFrame(animSprite->getFrameCount() - 1); // stop on last frame to avoid visually jarring transitons
 				unjus->runAction(CCFadeOut::create(manager->jumpscareFadeOutTime));
 			}
+			if (manager->randomizeJumpscares) unjus->setTag(20260104);
 		}
+		return;
+	}
+
+	if (manager->randomizeJumpscares && unjus->getTag() == 20260104) {
+		if (unjus->getOpacity() > 0) return;
+
+		auto iterator = Manager::pickRandomJumpscare(manager->jumpscares);
+		if (iterator == manager->jumpscares.end()) {
+			unjus->setTag(-1);
+			return;
+		}
+		const auto&[imageFile, audioFile] = *iterator;
+
+		Utils::removeUNJUS();
+		manager->channel->stop();
+		manager->sound->release();
+
+		Utils::addUNJUS(imageFile);
+		if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
 		return;
 	}
 

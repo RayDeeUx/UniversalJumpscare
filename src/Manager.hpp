@@ -37,6 +37,8 @@ public:
 	std::mt19937_64 rng{std::random_device{}()};
 	std::uniform_real_distribution<double> dist{0.0, 1.0};
 
+	std::mt19937_64 rngMore{std::random_device{}()};
+
 	FMOD::Sound* sound;
 	FMOD::Channel* channel;
 	FMOD::System* system = FMODAudioEngine::sharedEngine()->m_system;
@@ -48,6 +50,7 @@ public:
 	const std::unordered_set<std::string_view> audioExtensions = {".mp3", ".wav", ".ogg", ".oga", ".flac"};
 	const std::unordered_set<std::string_view> imageExtensions = {".png", ".webp", ".gif", ".jpeg", ".jpg", ".apng", ".jxl", ".qoi"};
 	ImageToOptionalAudio jumpscares = {};
+	bool randomizeJumpscares = false;
 
 	static Manager* get() {
 		if (!instance) instance = new Manager();
@@ -59,6 +62,7 @@ public:
 		instance->hideInLevelEditorLayer = Mod::get()->getSettingValue<bool>("hideInLevelEditorLayer");
 		instance->hideEverywhereElse = Mod::get()->getSettingValue<bool>("hideEverywhereElse");
 		instance->forceHideIfJumpscareStillActive = Mod::get()->getSettingValue<bool>("forceHideIfJumpscareStillActive");
+		instance->randomizeJumpscares = Mod::get()->getSettingValue<bool>("randomizeJumpscares");
 		instance->visibilityInPlayLayer = geode::utils::string::toLower(Mod::get()->getSettingValue<std::string>("visibilityInPlayLayer"));
 		instance->jumpscareAudioVolume = static_cast<float>(std::clamp<int>(static_cast<int>(Mod::get()->getSettingValue<int64_t>("jumpscareAudioVolume")), 0, 100)) / 100.f;
 		instance->jumpscareFadeOutTime = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutTime")), .01f, 15.f);
@@ -188,4 +192,16 @@ public:
 		}
 	}
 
+	std::unordered_map<std::filesystem::path, std::filesystem::path>::const_iterator pickRandomJumpscare(const std::unordered_map<std::filesystem::path, std::filesystem::path>& jumpscares) {
+		if (jumpscares.empty()) return jumpscares.end();
+
+		std::uniform_int_distribution<std::size_t> dist(0, jumpscares.size() - 1);
+
+		const std::size_t selected = dist(instance->rngMore);
+		std::unordered_map<std::filesystem::path, std::filesystem::path>::const_iterator iterator = jumpscares.begin();
+
+		for (std::size_t i = 0; i < selected; ++i) ++iterator;
+
+		return iterator;
+	}
 };
