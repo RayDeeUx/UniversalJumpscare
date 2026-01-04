@@ -5,7 +5,8 @@
 using namespace geode::prelude;
 
 $on_mod(Loaded) {
-	Manager::get();
+	Manager::get(); // avoid segfaults
+	if (!std::filesystem::exists(Mod::get()->getConfigDir())) std::filesystem::create_directory(Mod::get()->getConfigDir());
 
 	const std::filesystem::path& jumpscareAudio = Mod::get()->getSettingValue<std::filesystem::path>("jumpscareAudio");
 	if (std::filesystem::exists(jumpscareAudio) && Manager::acceptableAudioFileExtension(jumpscareAudio)) Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudio).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
