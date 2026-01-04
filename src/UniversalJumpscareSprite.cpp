@@ -57,19 +57,11 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float)
 	if (manager->randomizeJumpscares && unjus->getTag() == 20260104) {
 		if (unjus->getOpacity() > 0) return;
 
-		auto iterator = Manager::pickRandomJumpscare(manager->jumpscares);
-		if (iterator == manager->jumpscares.end()) {
-			unjus->setTag(-1);
-			return;
-		}
-		const auto&[imageFile, audioFile] = *iterator;
+		unjus->setTag(20260105);
+		Loader::get()->queueInMainThread([unjus, manager]() {
+			Utils::replaceUNJUS(unjus, manager);
+		});
 
-		Utils::removeUNJUS();
-		manager->channel->stop();
-		manager->sound->release();
-
-		Utils::addUNJUS(imageFile);
-		if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
 		return;
 	}
 

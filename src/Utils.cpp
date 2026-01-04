@@ -90,6 +90,20 @@ namespace Utils {
 		if (Utils::getBool("logging")) log::info("UNJUS removed");
 	}
 
+	void replaceUNJUS(UniversalJumpscareSprite* unjus, Manager *manager) {
+		auto iterator = Manager::pickRandomJumpscare(manager->jumpscares);
+		if (iterator == manager->jumpscares.end()) return unjus->setTag(-1);
+
+		const auto&[imageFile, audioFile] = *iterator;
+
+		Utils::removeUNJUS();
+		manager->channel->stop();
+		manager->sound->release();
+
+		Utils::addUNJUS(imageFile);
+		if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
+	}
+
 	void setUNJUSScale(UniversalJumpscareSprite* unjus, const CCSize& win) {
 		if (!unjus) return;
 		const CCSize replacementSize = unjus->getContentSize();
