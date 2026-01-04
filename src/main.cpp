@@ -52,8 +52,9 @@ $on_mod(Loaded) {
 	});
 	listenForSettingChanges<std::filesystem::path>("jumpscareAudio", [](const std::filesystem::path& jumpscareAudioNew) {
 		Manager::get()->channel->stop();
-		Manager::get()->sound->release();
-		if (std::filesystem::exists(jumpscareAudioNew)) Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudioNew).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
+		FMOD::Sound* originalSound = Manager::get()->sound;
+		if (std::filesystem::exists(jumpscareAudioNew) && Manager::acceptableAudioFileExtension(jumpscareAudioNew)) Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudioNew).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
+		originalSound->release();
 	});
 	listenForSettingChanges<int64_t>("jumpscareAudioVolume", [](const int64_t jumpscareAudioVolumeNew) {
 		Manager::get()->jumpscareAudioVolume = static_cast<float>(std::clamp<int>(static_cast<int>(jumpscareAudioVolumeNew), 0, 100)) / 100.f;

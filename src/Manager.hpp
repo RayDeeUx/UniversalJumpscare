@@ -52,6 +52,8 @@ public:
 	ImageToOptionalAudio jumpscares = {};
 	bool randomizeJumpscares = false;
 
+	double timePassed = 0;
+
 	static Manager* get() {
 		if (!instance) instance = new Manager();
 		return instance;

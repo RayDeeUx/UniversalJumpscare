@@ -19,7 +19,7 @@ bool UniversalJumpscareSprite::initWithFile(const char* content) {
 	return true;
 }
 
-void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float) {
+void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float dt) {
 	UniversalJumpscareSprite* unjus = Utils::getUNJUS();
 	if (!unjus) return;
 
@@ -30,7 +30,7 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float)
 	const bool currentlyVisible = unjus->isVisible();
 
 	Manager* manager = Manager::get();
-	if (unjus->numberOfRunningActions() > 0) {
+	if (unjus->numberOfRunningActions() > 0 && !unjus->getActionByTag(20260104)) {
 		if (manager->forceHideIfJumpscareStillActive && wasVisible != currentlyVisible) {
 			unjus->stopAllActions();
 			unjus->setOpacity(0);
@@ -40,16 +40,14 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float)
 				animSprite->setCurrentFrame(0);
 				animSprite->stop();
 			}
-			if (manager->randomizeJumpscares) unjus->setTag(20260104);
 		} else if (manager->unjusIsAnimated) {
 			imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(unjus);
-			if (animSprite->getCurrentFrame() == animSprite->getFrameCount() - 2) {
+			if (animSprite->getCurrentFrame() > animSprite->getFrameCount() - 3) {
 				unjus->stopAllActions();
 				animSprite->stop();
 				animSprite->setCurrentFrame(animSprite->getFrameCount() - 1); // stop on last frame to avoid visually jarring transitons
-				unjus->runAction(CCFadeOut::create(manager->jumpscareFadeOutTime));
+				unjus->runAction(CCFadeOut::create(manager->jumpscareFadeOutTime))->setTag(20260104);
 			}
-			if (manager->randomizeJumpscares) unjus->setTag(20260104);
 		}
 		return;
 	}
@@ -65,15 +63,20 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float)
 		return;
 	}
 
-	if (!unjus->isVisible() || Manager::shouldNotJumpscare()) return;
+	manager->timePassed += dt;
+	if (!unjus->isVisible() || manager->timePassed < manager->probabilityFrequency) return;
+	if (Manager::shouldNotJumpscare()) return;
 
 	manager->channel->stop();
 	if (manager->unjusIsAnimated) {
 		imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(manager->unjus);
+		animSprite->setForceLoop(std::make_optional<bool>(false));
 		animSprite->setCurrentFrame(0);
 		animSprite->play();
 	}
 	unjus->setOpacity(255);
+	if (manager->randomizeJumpscares) unjus->setTag(20260104);
+	manager->timePassed = 0.;
 
 	CCDelayTime* delay = CCDelayTime::create(!manager->unjusIsAnimated ? manager->jumpscareFadeOutDelay : 2123456789.f);
 	CCFadeOut* fadeOut = CCFadeOut::create(!manager->unjusIsAnimated ? manager->jumpscareFadeOutTime : 2123456789.f);

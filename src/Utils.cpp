@@ -98,10 +98,14 @@ namespace Utils {
 
 		Utils::removeUNJUS();
 		manager->channel->stop();
-		manager->sound->release();
+		FMOD::Sound* originalSound = Manager::get()->sound;
+
+		log::info("using imageFile: {}", geode::utils::string::pathToString(imageFile));
+		log::info("using audioFile: {}", geode::utils::string::pathToString(audioFile));
 
 		Utils::addUNJUS(imageFile);
 		if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
+		originalSound->release();
 	}
 
 	void setUNJUSScale(UniversalJumpscareSprite* unjus, const CCSize& win) {
@@ -128,7 +132,7 @@ namespace Utils {
 		unjus->setTag(10162025);
 		unjus->setID("universal-jumpscare-sprite"_spr);
 		Manager::get()->unjusIsAnimated = imgp::AnimatedSprite::from(unjus)->isAnimated();
-		unjus->schedule(schedule_selector(UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere), static_cast<float>(Manager::get()->probabilityFrequency));
+		unjus->schedule(schedule_selector(UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere));
 	}
 
 }
