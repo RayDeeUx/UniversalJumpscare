@@ -98,7 +98,7 @@ namespace Utils {
 	void replaceUNJUS(UniversalJumpscareSprite* unjus, Manager* manager) {
 		auto iterator = Manager::pickRandomJumpscare(manager->jumpscares);
 		if (iterator == manager->jumpscares.end()) {
-			if (unjus) return unjus->setTag(10162025);
+			if (unjus) unjus->setTag(10162025);
 			return;
 		}
 

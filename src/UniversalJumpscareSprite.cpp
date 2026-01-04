@@ -84,7 +84,11 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 	CCSequence* seqnce = CCSequence::create(delay, fadeOut, nullptr);
 	unjus->runAction(seqnce);
 
-	if (!manager->sound || !std::filesystem::exists(manager->currentAudio)) return log::info("manager->sound IS NULL REPORT THIS");
+	if (!manager->sound || !std::filesystem::exists(manager->currentAudio)) {
+		if (Mod::get()->isLoggingEnabled()) log::info("manager->sound not found. if manager->currentAudio ({}) is NOT empty, report this.", geode::utils::string::pathToString(manager->currentAudio));
+		return;
+	}
+
 	manager->system->playSound(manager->sound, nullptr, false, &manager->channel);
 	manager->channel->setVolume(manager->jumpscareAudioVolume);
 }
