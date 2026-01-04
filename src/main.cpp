@@ -79,6 +79,18 @@ $on_mod(Loaded) {
 	listenForSettingChanges<std::filesystem::path>("additionalJumpscaresFolder", [](const std::filesystem::path&) {
 		Manager::loadOtherJumpscares();
 	});
+	listenForSettingChanges<bool>("randomizeJumpscares", [](const bool randomizeJumpscares) {
+		Manager::loadOtherJumpscares();
+		Manager::get()->randomizeJumpscares = randomizeJumpscares;
+		if (UniversalJumpscareSprite* unjus = Manager::get()->unjus; unjus && randomizeJumpscares) {
+			unjus->unscheduleAllSelectors();
+			unjus->setOpacity(0);
+			Utils::replaceUNJUS(unjus);
+		} else if (!randomizeJumpscares) {
+			Utils::removeUNJUS();
+			Utils::addUNJUS();
+		}
+	});
 	listenForSettingChanges<bool>("logging", [](const bool logging) {
 		Mod::get()->setLoggingEnabled(logging);
 	});
