@@ -82,12 +82,12 @@ public:
 	}
 
 	static bool acceptableAudioFileExtension(const std::filesystem::path& audioFile) {
-	    if (!std::filesystem::exists(audioFile) || std::filesystem::is_directory(audioFile)) return false;
+		if (!std::filesystem::exists(audioFile) || std::filesystem::is_directory(audioFile)) return false;
 		return instance->audioExtensions.contains(geode::utils::string::pathToString(audioFile.extension()));
 	}
 
 	static bool acceptableImageFileExtension(const std::filesystem::path& imageFile) {
-	    if (!std::filesystem::exists(imageFile) || std::filesystem::is_directory(imageFile)) return false;
+		if (!std::filesystem::exists(imageFile) || std::filesystem::is_directory(imageFile)) return false;
 		return instance->imageExtensions.contains(geode::utils::string::pathToString(imageFile.extension()));
 	}
 
@@ -101,72 +101,91 @@ public:
 		}
 	}
 
-	static void tryFindingCorrespondingFile(const std::filesystem::path& path, const std::string& stem, StemToPath& knownFileNames, const bool trueIfImageFalseIfAudio, ImageToOptionalAudio& jumpscaresMap) {
-		auto correspondingJumpscareItem = knownFileNames.find(stem);
-		if (correspondingJumpscareItem != knownFileNames.end()) {
-			if (trueIfImageFalseIfAudio) jumpscaresMap.emplace(correspondingJumpscareItem->second, path);
-			else jumpscaresMap.emplace(path, correspondingJumpscareItem->second);
-			knownFileNames.erase(correspondingJumpscareItem);
-		} else {
-			knownFileNames.emplace(stem, path);
+	static void tryFindingCorrespondingFile(const std::filesystem::path& path, const std::string& stem, StemToPath& imageStemFilePairs, StemToPath& audioStemFilePairs, ImageToOptionalAudio& jumpscaresMap) {
+		if (Manager::acceptableImageFileExtension(path)) {
+			auto audioStemFilePair = audioStemFilePairs.find(stem);
+			if (audioStemFilePair != audioStemFilePairs.end() && std::filesystem::exists(audioStemFilePair->second)) {
+				jumpscaresMap.emplace(path, audioStemFilePair->second);
+				audioStemFilePairs.erase(audioStemFilePair);
+			} else {
+				imageStemFilePairs.emplace(stem, path);
+			}
+		} else if (Manager::acceptableAudioFileExtension(path)) {
+			auto imageStemFilePair = imageStemFilePairs.find(stem);
+			if (imageStemFilePair != imageStemFilePairs.end() && std::filesystem::exists(imageStemFilePair->second)) {
+				jumpscaresMap.emplace(imageStemFilePair->second, path);
+				imageStemFilePairs.erase(imageStemFilePair);
+			} else {
+				audioStemFilePairs.emplace(stem, path);
+			}
 		}
 	}
 
-	static void checkSubDirectoryForJumpscare(const auto& file, ImageToOptionalAudio& jumpscaresMap) {
-		bool imageFilePathFound = false, audioFilePathFound = false;
-		std::filesystem::path imageFile {}, audioFile {};
-		for (const auto& subFile : std::filesystem::directory_iterator(file.path())) {
-			if (std::filesystem::is_directory(subFile) || !std::filesystem::exists(subFile)) continue;
-			const std::filesystem::path& subFilePath = subFile.path();
-			const std::string& stemAsString = string::pathToString(subFilePath.stem());
-			if (!imageFilePathFound && stemAsString == "jumpscare" && Manager::acceptableImageFileExtension(subFilePath)) {
-			    imageFilePathFound = true;
-			    imageFile = subFilePath;
+	static void checkSubDirectoryForJumpscare(const std::filesystem::directory_entry& dirEntry, ImageToOptionalAudio& jumpscaresMap) {
+		if (!std::filesystem::is_directory(dirEntry)) return;
+		std::filesystem::path imageFile {};
+		std::filesystem::path audioFile {};
+		bool imageFound = false;
+		bool audioFound = false;
+
+		for (const auto& subFile : std::filesystem::directory_iterator(dirEntry.path())) {
+			if (!std::filesystem::is_regular_file(subFile)) continue;
+			const std::filesystem::path& subPath = subFile.path();
+			const std::string& stem = geode::utils::string::pathToString(subPath.stem());
+			if (!imageFound && stem == "jumpscare" && Manager::acceptableImageFileExtension(subPath)) {
+				imageFile = subPath;
+				imageFound = true;
 			}
-			if (!audioFilePathFound && stemAsString == "jumpscareAudio" && Manager::acceptableAudioFileExtension(subFilePath)) {
-			    audioFilePathFound = true;
-			    audioFile = subFilePath;
+			if (!audioFound && stem == "jumpscareAudio" && Manager::acceptableAudioFileExtension(subPath)) {
+				audioFile = subPath;
+				audioFound = true;
 			}
-			if (imageFilePathFound && audioFilePathFound) break;
+			if (imageFound && audioFound) break;
 		}
-		if (imageFilePathFound) {
-			jumpscaresMap.emplace(imageFile, audioFilePathFound ? audioFile : std::filesystem::path{});
+
+		if (imageFound && std::filesystem::exists(imageFile)) {
+			jumpscaresMap.emplace(imageFile, (audioFound && std::filesystem::exists(audioFile)) ? audioFile : std::filesystem::path{});
 		}
 	}
 
 	static void loadJumpscaresFrom(const std::filesystem::path& folder, ImageToOptionalAudio& jumpscaresMap) {
 		if (!std::filesystem::exists(folder) || !std::filesystem::is_directory(folder)) return;
 
-		StemToPath knownImageFiles = {};
-		StemToPath knownAudioFiles = {};
+		StemToPath knownImageFiles;
+		StemToPath knownAudioFiles;
 
-		for (const auto& file : std::filesystem::directory_iterator(folder)) {
-			if (!std::filesystem::exists(file)) continue;
+		for (const auto& entry : std::filesystem::directory_iterator(folder)) {
+			if (!std::filesystem::exists(entry)) continue;
 
-			if (std::filesystem::is_directory(file)) {
-				Manager::checkSubDirectoryForJumpscare(file, instance->jumpscares);
-			} else if (std::filesystem::is_regular_file(file)) {
-				const std::filesystem::path& path = file.path();
-				const std::string& stemAsString = geode::utils::string::pathToString(path.stem());
-
-				if (Manager::acceptableImageFileExtension(path)) {
-					Manager::tryFindingCorrespondingFile(path, stemAsString, knownImageFiles, true, jumpscaresMap);
-				} else if (Manager::acceptableAudioFileExtension(path)) {
-					Manager::tryFindingCorrespondingFile(path, stemAsString, knownAudioFiles, false, jumpscaresMap);
-				}
+			if (std::filesystem::is_directory(entry)) {
+				Manager::checkSubDirectoryForJumpscare(entry, jumpscaresMap);
+				continue;
 			}
 
-			std::string stemToRemove;
-			for (const auto& [stem, path] : knownAudioFiles) {
-				if (!knownImageFiles.contains(stem)) continue;
-				if (!std::filesystem::exists(knownImageFiles.find(stem)->second)) continue;
-				jumpscaresMap.emplace(knownImageFiles.find(stem)->second, path);
-				knownImageFiles.erase(knownImageFiles.find(stem));
-				stemToRemove = stem;
-			}
-			if (knownAudioFiles.contains(stemToRemove)) knownAudioFiles.erase(knownAudioFiles.find(stemToRemove));
+			if (!std::filesystem::is_regular_file(entry)) continue;
+
+			const auto path = entry.path();
+			const auto stem = geode::utils::string::pathToString(path.stem());
+
+			Manager::tryFindingCorrespondingFile(path, stem, knownImageFiles, knownAudioFiles, jumpscaresMap);
 		}
 
-		for (const auto& [unused, path] : knownImageFiles) if (std::filesystem::exists(path)) jumpscaresMap.emplace(path, std::filesystem::path{});
+		std::vector<std::string> toRemove = {};
+
+		for (const auto& [stem, imageFile] : knownImageFiles) {
+			auto audioStemFilePair = knownAudioFiles.find(stem);
+			if (audioStemFilePair != knownAudioFiles.end() && std::filesystem::exists(imageFile) && std::filesystem::exists(audioStemFilePair->second)) {
+				jumpscaresMap.emplace(imageFile, audioStemFilePair->second);
+				knownAudioFiles.erase(audioStemFilePair);
+				toRemove.push_back(stem);
+			}
+		}
+
+		for (const auto& stem : toRemove) knownImageFiles.erase(stem);
+
+		for (const auto& [unused, imagePath] : knownImageFiles) {
+			if (std::filesystem::exists(imagePath)) jumpscaresMap.emplace(imagePath, std::filesystem::path{});
+		}
 	}
+
 };

@@ -205,6 +205,15 @@
 			"name": "Force Hide if Jumpscare is Still Active When Switching Menus or Exiting/Entering Levels",
 			"type": "bool",
 			"default": true
+		},
+		"advanced-settings-header": {
+			"name": "Advanced",
+			"type": "title"
+		},
+		"logging": {
+			"name": "Logging",
+			"type": "bool",
+			"default": false
 		}
 	},
 	"dependencies": {
