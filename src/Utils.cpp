@@ -92,7 +92,7 @@ namespace Utils {
 
 	void replaceUNJUS(UniversalJumpscareSprite* unjus, Manager* manager) {
 		auto iterator = Manager::pickRandomJumpscare(manager->jumpscares);
-		if (iterator == manager->jumpscares.end()) return unjus->setTag(-1);
+		if (iterator == manager->jumpscares.end()) return unjus->setTag(10162025);
 
 		const auto&[imageFile, audioFile] = *iterator;
 
