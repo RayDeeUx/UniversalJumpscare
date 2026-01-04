@@ -5,8 +5,10 @@
 using namespace geode::prelude;
 
 $on_mod(Loaded) {
+	Manager::get();
+
 	const std::filesystem::path& jumpscareAudio = Mod::get()->getSettingValue<std::filesystem::path>("jumpscareAudio");
-	if (std::filesystem::exists(jumpscareAudio) && Manager::acceptableAudioFileExtension(jumpscareAudio.extension())) Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudio).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
+	if (std::filesystem::exists(jumpscareAudio) && Manager::acceptableAudioFileExtension(jumpscareAudio)) Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudio).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
 	Manager::get()->channel->setVolume(static_cast<float>(std::clamp<int>(static_cast<int>(Mod::get()->getSettingValue<int64_t>("jumpscareAudioVolume")), 0, 100)) / 100.f);
 
 	listenForSettingChanges<bool>("enabled", [](bool isEnabled) {
@@ -16,7 +18,7 @@ $on_mod(Loaded) {
 	});
 	listenForSettingChanges<std::filesystem::path>("jumpscareImage", [](const std::filesystem::path& path) {
 		Utils::removeUNJUS();
-		if (Manager::acceptableImageFileExtension(path.extension())) Utils::addUNJUS(path);
+		if (Manager::acceptableImageFileExtension(path)) Utils::addUNJUS(path);
 	});
 	listenForSettingChanges<int64_t>("probabilityNumerator", [](const int64_t newNumerator) {
 		Manager::calculateProbability(newNumerator, Mod::get()->getSettingValue<int64_t>("probabilityDenominator"));
