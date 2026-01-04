@@ -84,7 +84,7 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 	CCSequence* seqnce = CCSequence::create(delay, fadeOut, nullptr);
 	unjus->runAction(seqnce);
 
-	if (!std::filesystem::exists(manager->currentAudio)) return;
+	if (!manager->sound || !std::filesystem::exists(manager->currentAudio)) return log::info("manager->sound IS NULL REPORT THIS");
 	manager->system->playSound(manager->sound, nullptr, false, &manager->channel);
 	manager->channel->setVolume(manager->jumpscareAudioVolume);
 }
