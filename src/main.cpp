@@ -32,8 +32,6 @@ $on_mod(Loaded) {
 	});
 	listenForSettingChanges<double>("probabilityFrequency", [](const double probabilityFrequency) {
 		Manager::get()->probabilityFrequency = std::clamp<double>(probabilityFrequency, .016667, 1000);
-		Manager::get()->unjus->unscheduleAllSelectors();
-		Manager::get()->unjus->schedule(schedule_selector(UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere), static_cast<float>(Manager::get()->probabilityFrequency));
 	});
 	listenForSettingChanges<std::string>("jumpscareImageFillMode", [](const std::string&) {
 		if (UniversalJumpscareSprite* unjus = Utils::getUNJUS(); unjus) Utils::setUNJUSScale(unjus);
