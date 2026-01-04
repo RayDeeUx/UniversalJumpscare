@@ -82,7 +82,7 @@ $on_mod(Loaded) {
 	listenForSettingChanges<bool>("randomizeJumpscares", [](const bool randomizeJumpscares) {
 		Manager::loadOtherJumpscares();
 		Manager::get()->randomizeJumpscares = randomizeJumpscares;
-		if (UniversalJumpscareSprite* unjus = Manager::get()->unjus; unjus && randomizeJumpscares) {
+		if (UniversalJumpscareSprite* unjus = Utils::getUNJUS(); unjus && randomizeJumpscares) {
 			unjus->unscheduleAllSelectors();
 			unjus->setOpacity(0);
 			Utils::replaceUNJUS(unjus);
