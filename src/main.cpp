@@ -5,15 +5,17 @@
 using namespace geode::prelude;
 
 $on_mod(Loaded) {
-	Manager::get(); // avoid segfaults
+	Manager::get();
+	Manager::loadStuff(); // avoid segfaults
+
 	if (!std::filesystem::exists(Mod::get()->getConfigDir())) std::filesystem::create_directory(Mod::get()->getConfigDir());
 
 	const std::filesystem::path& jumpscareAudio = Mod::get()->getSettingValue<std::filesystem::path>("jumpscareAudio");
 	if (std::filesystem::exists(jumpscareAudio) && Manager::acceptableAudioFileExtension(jumpscareAudio)) Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudio).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
 	Manager::get()->channel->setVolume(static_cast<float>(std::clamp<int>(static_cast<int>(Mod::get()->getSettingValue<int64_t>("jumpscareAudioVolume")), 0, 100)) / 100.f);
 
-	listenForSettingChanges<bool>("enabled", [](bool isEnabled) {
-		UniversalJumpscareSprite* unjus = Utils::getUNJUS();
+	listenForSettingChanges<bool>("enabled", [](const bool isEnabled) {
+		const UniversalJumpscareSprite* unjus = Utils::getUNJUS();
 		if (!isEnabled && unjus) return Utils::removeUNJUS();
 		if (isEnabled && !unjus) return Utils::addUNJUS();
 	});

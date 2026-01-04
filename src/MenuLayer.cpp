@@ -18,8 +18,6 @@ class $modify(MyMenuLayer, MenuLayer) {
 
 		Utils::addUNJUS();
 
-		Manager::loadStuff();
-
 		return true;
 	}
 };

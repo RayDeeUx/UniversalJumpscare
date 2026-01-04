@@ -32,7 +32,7 @@ public:
 	int64_t denominator = 10000;
 	double probability = static_cast<double>(numerator) / static_cast<double>(denominator);
 
-	double probabilityFrequency = .016667;
+	double probabilityFrequency = (1. / 60.);
 
 	UniversalJumpscareSprite* unjus = nullptr;
 	bool unjusIsAnimated = false;
@@ -66,7 +66,7 @@ public:
 		instance->jumpscareAudioVolume = static_cast<float>(std::clamp<int>(static_cast<int>(Mod::get()->getSettingValue<int64_t>("jumpscareAudioVolume")), 0, 100)) / 100.f;
 		instance->jumpscareFadeOutTime = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutTime")), .01f, 15.f);
 		instance->jumpscareFadeOutDelay = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutDelay")), .0f, 15.f);
-		instance->probabilityFrequency = std::clamp<double>(Mod::get()->getSettingValue<double>("probabilityFrequency"), .016667, 1000);
+		instance->probabilityFrequency = std::clamp<double>(Mod::get()->getSettingValue<double>("probabilityFrequency"), (1. / 60.), 1000);
 	}
 
 	static void calculateProbability(const int64_t numerator, const int64_t denominator) {
