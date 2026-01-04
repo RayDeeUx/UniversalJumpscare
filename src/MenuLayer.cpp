@@ -22,9 +22,16 @@ class $modify(MyMenuLayer, MenuLayer) {
 			} else {
 				const auto&[imageFile, audioFile] = *iterator;
 				manager->channel->stop();
-				FMOD::Sound* originalSound = Manager::get()->sound;
+				FMOD::Sound* originalSound = manager->sound;
+
+				manager->currentImage = std::filesystem::path{};
+				manager->currentAudio = std::filesystem::path{};
+
 				if (std::filesystem::exists(imageFile)) Utils::addUNJUS(imageFile);
-				if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
+				if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) {
+					manager->currentAudio = audioFile;
+					manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
+				}
 				if (originalSound) originalSound->release();
 			}
 		} else {

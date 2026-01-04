@@ -68,15 +68,20 @@ namespace Utils {
 
 	void addUNJUS(const std::filesystem::path& imagePath) {
 		if (UniversalJumpscareSprite* unjus = Utils::getUNJUS(); unjus) return unjus->setVisible(true);
+		Manager::get()->currentImage = std::filesystem::path{};
 		UniversalJumpscareSprite* newSprite = UniversalJumpscareSprite::create(geode::utils::string::pathToString(imagePath).c_str());
 		if (!newSprite) return log::info("UNJUS addition operation failed, node was not created properly");
+
 		Utils::setupUNJUS(newSprite);
 		CCScene::get()->addChild(newSprite);
 		SceneManager::get()->keepAcrossScenes(newSprite);
+		Manager::get()->unjus = newSprite;
+		Manager::get()->currentImage = imagePath;
+
 		newSprite->setVisible(true);
 		newSprite->setOpacity(0);
 		newSprite->setPosition(CCScene::get()->getContentSize() / 2.f);
-		Manager::get()->unjus = newSprite;
+
 		Manager::calculateProbability(Utils::getInt("probabilityNumerator"), Utils::getInt("probabilityDenominator"));
 		if (Utils::getBool("logging")) log::info("UNJUS added");
 	}
@@ -108,8 +113,14 @@ namespace Utils {
 			log::info("using audioFile: {}", geode::utils::string::pathToString(audioFile));
 		}
 
+		manager->currentImage = std::filesystem::path{};
+		manager->currentAudio = std::filesystem::path{};
+
 		if (std::filesystem::exists(imageFile)) Utils::addUNJUS(imageFile);
-		if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
+		if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) {
+			manager->currentAudio = audioFile;
+			manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
+		}
 		if (originalSound) originalSound->release();
 	}
 

@@ -5,15 +5,18 @@
 using namespace geode::prelude;
 
 $on_mod(Loaded) {
-	Manager::get();
+	Manager* manager = Manager::get();
 	Manager::loadStuff(); // avoid segfaults
 	Mod::get()->setLoggingEnabled(Mod::get()->getSettingValue<bool>("logging"));
 
 	if (!std::filesystem::exists(Mod::get()->getConfigDir())) std::filesystem::create_directory(Mod::get()->getConfigDir());
 
 	const std::filesystem::path& jumpscareAudio = Mod::get()->getSettingValue<std::filesystem::path>("jumpscareAudio");
-	if (std::filesystem::exists(jumpscareAudio) && Manager::acceptableAudioFileExtension(jumpscareAudio)) Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudio).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
-	Manager::get()->channel->setVolume(static_cast<float>(std::clamp<int>(static_cast<int>(Mod::get()->getSettingValue<int64_t>("jumpscareAudioVolume")), 0, 100)) / 100.f);
+	if (std::filesystem::exists(jumpscareAudio) && Manager::acceptableAudioFileExtension(jumpscareAudio)) {
+		manager->currentAudio = jumpscareAudio;
+		manager->system->createSound(geode::utils::string::pathToString(jumpscareAudio).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
+	}
+	manager->channel->setVolume(static_cast<float>(std::clamp<int>(static_cast<int>(Mod::get()->getSettingValue<int64_t>("jumpscareAudioVolume")), 0, 100)) / 100.f);
 
 	listenForSettingChanges<bool>("enabled", [](const bool isEnabled) {
 		const UniversalJumpscareSprite* unjus = Utils::getUNJUS();
@@ -49,9 +52,16 @@ $on_mod(Loaded) {
 		Manager::get()->visibilityInPlayLayer = geode::utils::string::toLower(visibilityInPlayLayerNew);
 	});
 	listenForSettingChanges<std::filesystem::path>("jumpscareAudio", [](const std::filesystem::path& jumpscareAudioNew) {
-		Manager::get()->channel->stop();
-		FMOD::Sound* originalSound = Manager::get()->sound;
-		if (std::filesystem::exists(jumpscareAudioNew) && Manager::acceptableAudioFileExtension(jumpscareAudioNew)) Manager::get()->system->createSound(geode::utils::string::pathToString(jumpscareAudioNew).c_str(), FMOD_DEFAULT, nullptr, &Manager::get()->sound);
+		Manager* manager = Manager::get();
+		manager->channel->stop();
+		FMOD::Sound* originalSound = manager->sound;
+
+		manager->currentAudio = std::filesystem::path{};
+
+		if (std::filesystem::exists(jumpscareAudioNew) && Manager::acceptableAudioFileExtension(jumpscareAudioNew)) {
+			manager->currentAudio = jumpscareAudioNew;
+			manager->system->createSound(geode::utils::string::pathToString(jumpscareAudioNew).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
+		}
 		originalSound->release();
 	});
 	listenForSettingChanges<int64_t>("jumpscareAudioVolume", [](const int64_t jumpscareAudioVolumeNew) {

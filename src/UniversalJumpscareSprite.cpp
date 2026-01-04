@@ -30,6 +30,7 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 	const bool currentlyVisible = unjus->isVisible();
 
 	Manager* manager = Manager::get();
+
 	if (unjus->numberOfRunningActions() > 0 && !unjus->getActionByTag(20260104)) {
 		if (manager->forceHideIfJumpscareStillActive && wasVisible != currentlyVisible) {
 			unjus->stopAllActions();
@@ -83,6 +84,7 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 	CCSequence* seqnce = CCSequence::create(delay, fadeOut, nullptr);
 	unjus->runAction(seqnce);
 
+	if (!std::filesystem::exists(manager->currentAudio)) return;
 	manager->system->playSound(manager->sound, nullptr, false, &manager->channel);
 	manager->channel->setVolume(manager->jumpscareAudioVolume);
 }

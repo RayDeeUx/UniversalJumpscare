@@ -52,6 +52,9 @@ public:
 	ImageToOptionalAudio jumpscares = {};
 	bool randomizeJumpscares = false;
 
+	std::filesystem::path currentImage {};
+	std::filesystem::path currentAudio {};
+
 	double timePassed = 0;
 
 	static Manager* get() {
