@@ -7,6 +7,7 @@ using namespace geode::prelude;
 $on_mod(Loaded) {
 	Manager::get();
 	Manager::loadStuff(); // avoid segfaults
+	Mod::get()->setLoggingEnabled(Mod::get()->getSettingValue<bool>("logging"));
 
 	if (!std::filesystem::exists(Mod::get()->getConfigDir())) std::filesystem::create_directory(Mod::get()->getConfigDir());
 
@@ -64,13 +65,12 @@ $on_mod(Loaded) {
 		Manager::get()->jumpscareFadeOutDelay = std::clamp<float>(static_cast<float>(jumpscareFadeOutDelayNew), .0f, 15.f);
 	});
 	listenForSettingChanges<std::filesystem::path>("jumpscaresFolder", [](const std::filesystem::path&) {
-		log::info("Manager::get()->jumpscares.size() before: {}", Manager::get()->jumpscares.size());
 		Manager::loadOtherJumpscares();
-		log::info("Manager::get()->jumpscares.size() after: {}", Manager::get()->jumpscares.size());
 	});
 	listenForSettingChanges<std::filesystem::path>("additionalJumpscaresFolder", [](const std::filesystem::path&) {
-		log::info("Manager::get()->jumpscares.size() before: {}", Manager::get()->jumpscares.size());
 		Manager::loadOtherJumpscares();
-		log::info("Manager::get()->jumpscares.size() after: {}", Manager::get()->jumpscares.size());
+	});
+	listenForSettingChanges<bool>("logging", [](const bool logging) {
+		Mod::get()->setLoggingEnabled(logging);
 	});
 }
