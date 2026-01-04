@@ -11,6 +11,4 @@ Customization options range from:
 - Whether the jumpscare appears in menus, the level editor, or during actual gameplay
 - Ending the jumpscare early whenever entering/exiting the level editor or actual gameplay
 
-Please note, randomization between multiple jumpscares is not supported at this time.
-
 This [Geode mod](https://geode-sdk.org) is licensed under LGPLv2. To report bugs or get help with using my mods, press the Discord button in the lower left corner.

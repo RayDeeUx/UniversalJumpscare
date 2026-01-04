@@ -1,7 +1,6 @@
 #include <Geode/modify/MenuLayer.hpp>
 #include "Manager.hpp"
 #include "Utils.hpp"
-#include <ctime>
 
 using namespace geode::prelude;
 
@@ -16,7 +15,21 @@ class $modify(MyMenuLayer, MenuLayer) {
 		if (!Utils::modEnabled()) return true;
 		if (Utils::getUNJUS()) return true;
 
-		Utils::addUNJUS();
+		if (manager->randomizeJumpscares) {
+			auto iterator = Manager::pickRandomJumpscare(manager->jumpscares);
+			if (iterator == manager->jumpscares.end()) {
+				Utils::addUNJUS();
+			} else {
+				const auto&[imageFile, audioFile] = *iterator;
+				manager->channel->stop();
+				FMOD::Sound* originalSound = Manager::get()->sound;
+				if (std::filesystem::exists(imageFile)) Utils::addUNJUS(imageFile);
+				if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
+				if (originalSound) originalSound->release();
+			}
+		} else {
+			Utils::addUNJUS();
+		}
 
 		return true;
 	}

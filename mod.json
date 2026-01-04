@@ -27,7 +27,7 @@
 		"randomizeJumpscares": {
 			"name": "Randomize Jumpscares",
 			"type": "bool",
-			"default": true
+			"default": false
 		},
 		"jumpscaresFolder": {
 			"name": "Jumpscares Folder",
@@ -55,7 +55,8 @@
 					"files": [ "*.png", "*.webp", "*.gif", "*.jpeg", "*.jpg", "*.apng", "*.jxl", "*.qoi" ],
 					"description": "Image files"
 				}
-			]
+			],
+			"enable-if": "!randomizeJumpscares"
 		},
 		"jumpscareImageFillMode": {
 			"name": "Image Fill Mode",
@@ -108,7 +109,8 @@
 					"files": [ "*.mp3", "*.wav", "*.ogg", "*.oga", "*.flac" ],
 					"description": "Audio files"
 				}
-			]
+			],
+			"enable-if": "!randomizeJumpscares"
 		},
 		"jumpscareAudioVolume": {
 			"name": "SFX Volume (%)",

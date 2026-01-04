@@ -92,7 +92,10 @@ namespace Utils {
 
 	void replaceUNJUS(UniversalJumpscareSprite* unjus, Manager* manager) {
 		auto iterator = Manager::pickRandomJumpscare(manager->jumpscares);
-		if (iterator == manager->jumpscares.end()) return unjus->setTag(10162025);
+		if (iterator == manager->jumpscares.end()) {
+			if (unjus) return unjus->setTag(10162025);
+			return;
+		}
 
 		const auto&[imageFile, audioFile] = *iterator;
 
@@ -100,12 +103,14 @@ namespace Utils {
 		manager->channel->stop();
 		FMOD::Sound* originalSound = Manager::get()->sound;
 
-		log::info("using imageFile: {}", geode::utils::string::pathToString(imageFile));
-		log::info("using audioFile: {}", geode::utils::string::pathToString(audioFile));
+		if (Mod::get()->isLoggingEnabled()) {
+			log::info("using imageFile: {}", geode::utils::string::pathToString(imageFile));
+			log::info("using audioFile: {}", geode::utils::string::pathToString(audioFile));
+		}
 
-		Utils::addUNJUS(imageFile);
+		if (std::filesystem::exists(imageFile)) Utils::addUNJUS(imageFile);
 		if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
-		originalSound->release();
+		if (originalSound) originalSound->release();
 	}
 
 	void setUNJUSScale(UniversalJumpscareSprite* unjus, const CCSize& win) {
