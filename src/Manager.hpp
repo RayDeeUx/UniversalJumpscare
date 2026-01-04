@@ -154,15 +154,17 @@ public:
 				} else if (Manager::acceptableAudioFileExtension(path)) {
 					Manager::tryFindingCorrespondingFile(path, stemAsString, knownAudioFiles, false, jumpscaresMap);
 				}
-
-				for (const auto& [stem, path] : knownAudioFiles) {
-					if (!knownImageFiles.contains(stem)) continue;
-					if (!std::filesystem::exists(knownImageFiles.find(stem)->second)) continue;
-					jumpscaresMap.emplace(knownImageFiles.find(stem)->second, path);
-					knownImageFiles.erase(knownImageFiles.find(stem));
-					knownAudioFiles.erase(knownAudioFiles.find(stem));
-				}
 			}
+
+			std::string stemToRemove;
+			for (const auto& [stem, path] : knownAudioFiles) {
+				if (!knownImageFiles.contains(stem)) continue;
+				if (!std::filesystem::exists(knownImageFiles.find(stem)->second)) continue;
+				jumpscaresMap.emplace(knownImageFiles.find(stem)->second, path);
+				knownImageFiles.erase(knownImageFiles.find(stem));
+				stemToRemove = stem;
+			}
+			if (knownAudioFiles.contains(stemToRemove)) knownAudioFiles.erase(knownAudioFiles.find(stemToRemove));
 		}
 
 		for (const auto& [unused, path] : knownImageFiles) if (std::filesystem::exists(path)) jumpscaresMap.emplace(path, std::filesystem::path{});
