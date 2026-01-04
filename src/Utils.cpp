@@ -90,7 +90,7 @@ namespace Utils {
 		if (Utils::getBool("logging")) log::info("UNJUS removed");
 	}
 
-	void replaceUNJUS(UniversalJumpscareSprite* unjus, Manager *manager) {
+	void replaceUNJUS(UniversalJumpscareSprite* unjus, Manager* manager) {
 		auto iterator = Manager::pickRandomJumpscare(manager->jumpscares);
 		if (iterator == manager->jumpscares.end()) return unjus->setTag(-1);
 

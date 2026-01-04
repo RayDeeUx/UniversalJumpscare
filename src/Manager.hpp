@@ -189,7 +189,10 @@ public:
 
 		for (const auto& stem : toRemove) knownImageFiles.erase(stem);
 
-		for (const auto& [unused, imagePath] : knownImageFiles) {
+		for (const auto& [stem, imagePath] : knownImageFiles) {
+			if (stem == "background" && geode::utils::string::pathToString(imagePath.extension()) == ".png" && geode::utils::string::endsWith(geode::utils::string::pathToString(imagePath.parent_path()), "weebify.jumpscare")) {
+				continue;
+			}
 			if (std::filesystem::exists(imagePath)) jumpscaresMap.emplace(imagePath, std::filesystem::path{});
 		}
 	}
