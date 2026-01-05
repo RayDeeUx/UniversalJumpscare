@@ -20,12 +20,10 @@ namespace Utils {
 
 	UniversalJumpscareSprite* getUNJUS();
 	void handleUNJUS();
-	void addUNJUS(const std::filesystem::path& imagePath = Mod::get()->getSettingValue<std::filesystem::path>("jumpscareImage"));
+	void addUNJUS(const std::filesystem::path& imagePath);
 	void removeUNJUS();
-	void replaceUNJUS(UniversalJumpscareSprite* unjus, Manager* manager = Manager::get());
+	void replaceUNJUS(UniversalJumpscareSprite* unjus, Manager* manager);
 
-	void setUNJUSScale(UniversalJumpscareSprite* unjus, const cocos2d::CCSize& win = CCDirector::get()->getWinSize());
+	void setUNJUSScale(UniversalJumpscareSprite* unjus);
 	void setupUNJUS(UniversalJumpscareSprite* unjus);
-	void addChroma(UniversalJumpscareSprite* unjus = Utils::getUNJUS());
-	std::string chooseFontFile(int64_t font);
 }

@@ -21,11 +21,14 @@ $on_mod(Loaded) {
 	listenForSettingChanges<bool>("enabled", [](const bool isEnabled) {
 		const UniversalJumpscareSprite* unjus = Utils::getUNJUS();
 		if (!isEnabled && unjus) return Utils::removeUNJUS();
-		if (isEnabled && !unjus) return Utils::addUNJUS();
+		if (isEnabled && !unjus) return Utils::addUNJUS(Manager::get()->currentImage);
 	});
 	listenForSettingChanges<std::filesystem::path>("jumpscareImage", [](const std::filesystem::path& path) {
+		if (Manager::get()->randomizeJumpscares) return;
 		Utils::removeUNJUS();
-		if (Manager::acceptableImageFileExtension(path)) Utils::addUNJUS(path);
+		if (!Manager::acceptableImageFileExtension(path)) return;
+		Manager::get()->currentImage = path;
+		Utils::addUNJUS(path);
 	});
 	listenForSettingChanges<int64_t>("probabilityNumerator", [](const int64_t newNumerator) {
 		Manager::calculateProbability(newNumerator, Mod::get()->getSettingValue<int64_t>("probabilityDenominator"));
@@ -85,10 +88,10 @@ $on_mod(Loaded) {
 		if (UniversalJumpscareSprite* unjus = Utils::getUNJUS(); unjus && randomizeJumpscares) {
 			unjus->unscheduleAllSelectors();
 			unjus->setOpacity(0);
-			Utils::replaceUNJUS(unjus);
+			Utils::replaceUNJUS(unjus, Manager::get());
 		} else if (!randomizeJumpscares) {
 			Utils::removeUNJUS();
-			Utils::addUNJUS();
+			Utils::addUNJUS(Mod::get()->getSettingValue<std::filesystem::path>("jumpscareImage"));
 		}
 	});
 	listenForSettingChanges<bool>("logging", [](const bool logging) {

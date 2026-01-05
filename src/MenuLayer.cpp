@@ -18,7 +18,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 		if (manager->randomizeJumpscares) {
 			auto iterator = Manager::pickRandomJumpscare(manager->jumpscares);
 			if (iterator == manager->jumpscares.end()) {
-				Utils::addUNJUS();
+				Utils::addUNJUS(Mod::get()->getSettingValue<std::filesystem::path>("jumpscareImage"));
 			} else {
 				const auto&[imageFile, audioFile] = *iterator;
 				manager->channel->stop();
@@ -27,7 +27,10 @@ class $modify(MyMenuLayer, MenuLayer) {
 				manager->currentImage = std::filesystem::path{};
 				manager->currentAudio = std::filesystem::path{};
 
-				if (std::filesystem::exists(imageFile)) Utils::addUNJUS(imageFile);
+				if (std::filesystem::exists(imageFile)) {
+					manager->currentImage = imageFile;
+					Utils::addUNJUS(imageFile);
+				}
 				if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) {
 					manager->currentAudio = audioFile;
 					manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
@@ -35,7 +38,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 				if (originalSound) originalSound->release();
 			}
 		} else {
-			Utils::addUNJUS();
+			Utils::addUNJUS(Mod::get()->getSettingValue<std::filesystem::path>("jumpscareImage"));
 		}
 
 		return true;

@@ -37,7 +37,7 @@ namespace Utils {
 		if (unjus && manager->hideEverywhereElse && !pl && !lel) unjus->setVisible(false);
 		if (unjus && manager->hideInLevelEditorLayer && lel) return unjus->setVisible(false);
 		if (!unjus && manager->hideInLevelEditorLayer && !lel) {
-			Utils::addUNJUS();
+			Utils::addUNJUS(manager->currentImage);
 			unjus = Utils::getUNJUS();
 		}
 		if (gjbgl && unjus) {
@@ -61,7 +61,7 @@ namespace Utils {
 				}
 			} else if (lel) {
 				if (manager->hideInLevelEditorLayer) return unjus->setVisible(false);
-				Utils::addUNJUS();
+				Utils::addUNJUS(manager->currentImage);
 			}
 		} else if (unjus) unjus->setVisible(!manager->hideEverywhereElse);
 	}
@@ -76,7 +76,7 @@ namespace Utils {
 		CCScene::get()->addChild(newSprite);
 		SceneManager::get()->keepAcrossScenes(newSprite);
 		Manager::get()->unjus = newSprite;
-		Manager::get()->currentImage = imagePath;
+		Manager::get()->currentImage = imagePath; // most other functions that call Utils::addUNJUS will do this anyway, but better to be safe
 
 		newSprite->setVisible(true);
 		newSprite->setOpacity(0);
@@ -116,7 +116,10 @@ namespace Utils {
 		manager->currentImage = std::filesystem::path{};
 		manager->currentAudio = std::filesystem::path{};
 
-		if (std::filesystem::exists(imageFile)) Utils::addUNJUS(imageFile);
+		if (std::filesystem::exists(imageFile)) {
+			manager->currentImage = imageFile;
+			Utils::addUNJUS(imageFile);
+		}
 		if (std::filesystem::exists(audioFile) && Manager::acceptableAudioFileExtension(audioFile)) {
 			manager->currentAudio = audioFile;
 			manager->system->createSound(geode::utils::string::pathToString(audioFile).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
@@ -124,8 +127,9 @@ namespace Utils {
 		if (originalSound) originalSound->release();
 	}
 
-	void setUNJUSScale(UniversalJumpscareSprite* unjus, const CCSize& win) {
+	void setUNJUSScale(UniversalJumpscareSprite* unjus) {
 		if (!unjus) return;
+		const CCSize& win = CCDirector::get()->getWinSize();
 		const CCSize replacementSize = unjus->getContentSize();
 		const float yRatio = win.height / replacementSize.height;
 		const float xRatio = win.width / replacementSize.width;
