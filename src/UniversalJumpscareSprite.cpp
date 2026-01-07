@@ -21,7 +21,7 @@ bool UniversalJumpscareSprite::initWithFile(const char* content) {
 
 void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float dt) {
 	UniversalJumpscareSprite* unjus = Utils::getUNJUS();
-	if (!unjus) return;
+	if (!unjus || unjus->getTag() == 20260105) return; // abort if there is no sprite OR if sprite is about to be removed
 
 	if (!Utils::modEnabled()) return unjus->setVisible(false);
 
@@ -56,7 +56,7 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 	if (manager->randomizeJumpscares && unjus->getTag() == 20260104) {
 		if (unjus->getOpacity() > 0) return;
 
-		unjus->setTag(20260105);
+		unjus->setTag(20260105); // flag sprite for removal
 		Loader::get()->queueInMainThread([unjus, manager]() {
 			Utils::replaceUNJUS(unjus, manager);
 		});
