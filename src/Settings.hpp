@@ -41,7 +41,8 @@ public:
 		return false;
 	}
 	void onConfigDirButton(CCObject*) {
-		file::openFolder(Mod::get()->getSettingValue<std::filesystem::path>(m_settingKey));
+		const std::filesystem::path& folder = Mod::get()->getSettingValue<std::filesystem::path>(m_settingKey);
+		if (std::filesystem::exists(folder)) file::openFolder(folder);
 	}
 	bool init(std::shared_ptr<MyButtonSettingV3> setting, float width) {
 		if (!SettingNodeV3::init(setting, width)) return false;
