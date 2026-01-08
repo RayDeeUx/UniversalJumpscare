@@ -43,6 +43,7 @@ public:
 	void onConfigDirButton(CCObject*) {
 		const std::filesystem::path& folder = Mod::get()->getSettingValue<std::filesystem::path>(m_settingKey);
 		if (std::filesystem::exists(folder)) file::openFolder(folder);
+		else FLAlertLayer::create("Hold up!", "You don't have a folder set for this setting. Try again!", "I Understand")->show();
 	}
 	bool init(std::shared_ptr<MyButtonSettingV3> setting, float width) {
 		if (!SettingNodeV3::init(setting, width)) return false;
