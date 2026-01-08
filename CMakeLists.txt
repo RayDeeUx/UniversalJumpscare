@@ -12,6 +12,8 @@ project(UniversalJumpscare VERSION 1.0.0)
 
 # Set up the mod binary
 add_library(${PROJECT_NAME} SHARED
+    src/Settings.cpp
+    src/Settings.hpp
     src/Manager.cpp
     src/Manager.hpp
     src/Utils.cpp

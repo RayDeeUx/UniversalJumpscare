@@ -35,11 +35,19 @@
 			"type": "folder",
 			"default": "{mod_config_dir}"
 		},
+		"jumpscaresFolderCustom": {
+			"name": "Open Jumpscares Folder",
+			"type": "custom:jumpscaresfolder"
+		},
 		"additionalJumpscaresFolder": {
 			"name": "Additional Jumpscares Folder",
 			"description": "Choose your folder of additional jumpscares here. If this setting is empty, it will be ignored.\n\nThere are several ways to register a jumpscare:\n- An <cl>image file</c> with no corresponding audio file (ex:  `jumpscare.png`  )\n- An <cl>image file</c> with an <cl>audio file</c> <co>sharing the same name</c> (ex:  `jumpscareOne.gif`  +  `jumpscareOne.mp3`  )\n- A <cl>folder</c> (within the folder you selected for this setting) <cl>containing the files</c>  `jumpscare.png`  for the jumpscare image, and  `jumpscareAudio.mp3`  for the jumpscare audio. <c-aaaaaa>*(This third option is specifically for people who also use Weebify's Jumpscare mod, where jumpscares only happen when dying inside levels.)*</c>",
 			"type": "folder",
 			"default": ""
+		},
+		"additionalJumpscaresFolderCustom": {
+			"name": "Open Additional Jumpscares Folder",
+			"type": "custom:additionaljumpscaresfolder"
 		},
 		"jumpscare-image-header": {
 			"name": "Jumpscare Image",

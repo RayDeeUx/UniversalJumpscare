@@ -1,10 +1,13 @@
 #include "UniversalJumpscareSprite.hpp"
+#include "Settings.hpp"
 #include "Manager.hpp"
 #include "Utils.hpp"
 
 using namespace geode::prelude;
 
 $on_mod(Loaded) {
+	(void) Mod::get()->registerCustomSettingType("jumpscaresfolder", &MyButtonSettingV3::parse);
+	(void) Mod::get()->registerCustomSettingType("additionaljumpscaresfolder", &MyButtonSettingV3::parse);
 	Manager* manager = Manager::get();
 	Manager::loadStuff(); // avoid segfaults
 	Mod::get()->setLoggingEnabled(Mod::get()->getSettingValue<bool>("logging"));
