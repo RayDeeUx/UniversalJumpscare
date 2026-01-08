@@ -88,6 +88,7 @@ $on_mod(Loaded) {
 	listenForSettingChanges<bool>("randomizeJumpscares", [](const bool randomizeJumpscares) {
 		Manager::loadOtherJumpscares();
 		Manager::get()->randomizeJumpscares = randomizeJumpscares;
+		if (!Utils::modEnabled()) return;
 		if (UniversalJumpscareSprite* unjus = Utils::getUNJUS(); unjus && randomizeJumpscares) {
 			unjus->unscheduleAllSelectors();
 			unjus->setOpacity(0);
@@ -95,6 +96,16 @@ $on_mod(Loaded) {
 		} else if (!randomizeJumpscares) {
 			Utils::removeUNJUS();
 			Utils::addUNJUS(Mod::get()->getSettingValue<std::filesystem::path>("jumpscareImage"));
+		}
+	});
+	listenForSettingChanges<bool>("enabled", [](const bool enabled) {
+		Utils::removeUNJUS();
+		if (!enabled) return;
+		Manager::loadOtherJumpscares();
+		if (!Manager::get()->randomizeJumpscares) {
+			Utils::addUNJUS(Mod::get()->getSettingValue<std::filesystem::path>("jumpscareImage"));
+		} else {
+			Utils::replaceUNJUS(nullptr, Manager::get());
 		}
 	});
 	listenForSettingChanges<bool>("logging", [](const bool logging) {
