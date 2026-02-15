@@ -73,8 +73,7 @@ namespace Utils {
 		if (!newSprite) return log::info("UNJUS addition operation failed, node was not created properly");
 
 		Utils::setupUNJUS(newSprite);
-		CCScene::get()->addChild(newSprite);
-		SceneManager::get()->keepAcrossScenes(newSprite);
+		geode::OverlayManager::get()->addChild(newSprite);
 		Manager::get()->unjus = newSprite;
 		Manager::get()->currentImage = imagePath; // most other functions that call Utils::addUNJUS will do this anyway, but better to be safe
 
@@ -89,7 +88,6 @@ namespace Utils {
 	void removeUNJUS() {
 		UniversalJumpscareSprite* unjus = Utils::getUNJUS();
 		if (!unjus) return;
-		SceneManager::get()->forget(unjus);
 		unjus->removeMeAndCleanup();
 		Manager::get()->unjus = nullptr;
 		if (Utils::getBool("logging")) log::info("UNJUS removed");
