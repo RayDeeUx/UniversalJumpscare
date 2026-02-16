@@ -1,5 +1,5 @@
 # UniversalJumpscare Changelog
-## v1.1.1
+## v1.1.1 and v1.1.2
 - Port to GD 2.2081.
 ## v1.1.0
 - Added Jumpscare Randomization.
