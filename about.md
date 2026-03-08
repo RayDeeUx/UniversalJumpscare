@@ -16,6 +16,6 @@ Customization options range from:
 
 Mod suggested by [BRemiTK/RemiliaTK](https://www.youtube.com/channel/UCjjuFe94YbGgT-cpTq0jQXA). "Inspired" by the countless mods for other games that shove Foxy from FNAF2 up in your face.
 
-A moment of silence for [KaydaCant](https://github.com/KaydaCant) and [Expeleo](https://github.com/Expeleo), who made similar attempts before.
+A moment of silence for [KaydaCant](https://github.com/KaydaCant), [Expeleo](https://github.com/Expeleo), and [ZyyeDev](https://github.com/ZyyeDev), who made similar attempts before.
 
 This [Geode mod](https://geode-sdk.org) is licensed under LGPLv2. To report bugs or get help with using my mods, press the Discord button in the lower left corner.
