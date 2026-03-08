@@ -1,5 +1,7 @@
 # UniversalFoxyJumpscare
 
+### <c-ffff55>As seen on</c> <c-ff0000>You</c>Tube<c-ffff55>!</c> ([Zeronium](https://www.youtube.com/watch?v=RORfLAdnB4s&t=126s))
+
 <c-aaaaaa>*Disclaimer: Foxy from the FNAF series is not the default jumpscare option in this mod. Please adjust the mod settings as appropriate; plain GIF/WEBP files will do just fine.*</c>
 
 "Yet another jumpscare mod?"
