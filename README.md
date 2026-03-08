@@ -1,4 +1,7 @@
-# UniversalJumpscare
+# UniversalFoxyJumpscare
+
+<c-aaaaaa>*Disclaimer: Foxy from the FNAF series is not the default jumpscare option in this mod. Please adjust the mod settings as appropriate; plain GIF/WEBP files will do just fine.*</c>
+
 "Yet another jumpscare mod?"
 
 Yep! This one's got GIF support, and can activate any time--even outside of levels!

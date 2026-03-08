@@ -1,4 +1,8 @@
-# UniversalJumpscare Changelog
+# UniversalFoxyJumpscare Changelog
+## v1.1.3
+- Rename the mod to UniversalFoxyJumpscare in a (hopefully) meaningful attempt to hint to others that a jumpscare mod with transparent animated sprite support already exists on the index.
+- Update the mod resources to include Foxy from FNAF2.
+- Update the mod logo as appropriate.
 ## v1.1.1 and v1.1.2
 - Port to GD 2.2081.
 ## v1.1.0
