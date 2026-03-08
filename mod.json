@@ -227,14 +227,16 @@
 		}
 	},
 	"dependencies": {
-		"prevter.imageplus": ">=1.0.3"
+		"prevter.imageplus": ">=1.0.5"
 	},
 	"resources": {
 		"files": [
-			"resources/jumpscare.mp3"
+			"resources/jumpscare.mp3",
+			"resources/foxy.mp3"
 		],
 		"sprites": [
-			"resources/jumpscare.png"
+			"resources/jumpscare.png",
+			"resources/foxy.png"
 		]
 	},
 	"issues": {
