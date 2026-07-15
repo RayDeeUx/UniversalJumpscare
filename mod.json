@@ -132,7 +132,7 @@
 			"name": "Jumpscare Conditions",
 			"type": "title"
 		},
-		"jumpscareOnConstantTimer": {
+		"jumpscareOnRandomTimer": {
 			"name": "Jumpscares on Random Timer",
 			"type": "bool",
 			"default": true
@@ -147,13 +147,93 @@
 			"type": "bool",
 			"default": false
 		},
+		"click-based-jumpscare-probability-header": {
+			"name": "Gameplay Click Jumpscare Probability",
+			"type": "title"
+		},
+		"probabilityNumeratorClickBased": {
+			"name": "Probability (Numerator)",
+			"description": "The numerator for the likelihood of the click-based jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
+			"type": "int",
+			"default": 1,
+			"min": 1,
+			"max": 1000000,
+			"control": {
+				"input": true,
+				"slider": false,
+				"arrows": true,
+				"big-arrows": true,
+				"arrow-step": 10000,
+				"big-arrow-step": 50000,
+				"slider-step": 0
+			},
+			"enable-if": "jumpscareOnClick"
+		},
+		"probabilityDenominatorClickBased": {
+			"name": "Probability (Denominator)",
+			"description": "The denominator for the likelihood of the click-based jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
+			"type": "int",
+			"default": 10000,
+			"min": 2,
+			"max": 1000000,
+			"control": {
+				"input": true,
+				"slider": false,
+				"arrows": true,
+				"big-arrows": true,
+				"arrow-step": 10000,
+				"big-arrow-step": 50000,
+				"slider-step": 0
+			},
+			"enable-if": "jumpscareOnClick"
+		},
+		"death-based-jumpscare-probability-header": {
+			"name": "Gameplay Click Jumpscare Probability",
+			"type": "title"
+		},
+		"probabilityNumeratorDeathBased": {
+			"name": "Probability (Numerator)",
+			"description": "The numerator for the likelihood of the death-based jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
+			"type": "int",
+			"default": 1,
+			"min": 1,
+			"max": 1000000,
+			"control": {
+				"input": true,
+				"slider": false,
+				"arrows": true,
+				"big-arrows": true,
+				"arrow-step": 10000,
+				"big-arrow-step": 50000,
+				"slider-step": 0
+			},
+			"enable-if": "jumpscareOnDeath"
+		},
+		"probabilityDenominatorDeathBased": {
+			"name": "Probability (Denominator)",
+			"description": "The denominator for the likelihood of the death-based jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
+			"type": "int",
+			"default": 10000,
+			"min": 2,
+			"max": 1000000,
+			"control": {
+				"input": true,
+				"slider": false,
+				"arrows": true,
+				"big-arrows": true,
+				"arrow-step": 10000,
+				"big-arrow-step": 50000,
+				"slider-step": 0
+			},
+			"enable-if": "jumpscareOnDeath"
+		},
 		"random-timer-jumpscare-probability-header": {
 			"name": "Random Timer Jumpscare Probability",
 			"type": "title"
 		},
 		"probabilityNumerator": {
 			"name": "Probability (Numerator)",
-			"description": "The numerator for the likelihood of the jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
+			"description": "The numerator for the likelihood of the random timer jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
 			"type": "int",
 			"default": 1,
 			"min": 1,
@@ -170,7 +250,7 @@
 		},
 		"probabilityDenominator": {
 			"name": "Probability (Denominator)",
-			"description": "The denominator for the likelihood of the jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
+			"description": "The denominator for the likelihood of the random timer jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
 			"type": "int",
 			"default": 10000,
 			"min": 2,
@@ -187,7 +267,7 @@
 		},
 		"probabilityFrequency": {
 			"name": "Frequency to Check Probability",
-			"description": "How frequently (in seconds) the mod checks if it is time for the jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
+			"description": "How frequently (in seconds) the mod checks if it is time for the random timer jumpscare.\n\n# <c-ff0000>***__Don't try anything funny.__***</c>",
 			"type": "float",
 			"default": 0.016667,
 			"min": 0.016667,

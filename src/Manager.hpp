@@ -29,6 +29,19 @@ public:
 	int64_t denominator = 10000;
 	double probability = static_cast<double>(numerator) / static_cast<double>(denominator);
 
+	// "probabilityNumeratorClickBased"
+	// "probabilityDenominatorClickBased"
+	// "probabilityNumeratorDeathBased"
+	// "probabilityDenominatorDeathBased"
+
+	int64_t numeratorClickBased = 1;
+	int64_t denominatorClickBased = 10000;
+	double probabilityClickBased = static_cast<double>(numeratorClickBased) / static_cast<double>(denominatorClickBased);
+
+	int64_t numeratorDeathBased = 1;
+	int64_t denominatorDeathBased = 10000;
+	double probabilityDeathBased = static_cast<double>(numeratorDeathBased) / static_cast<double>(denominatorDeathBased);
+
 	double probabilityFrequency = (1. / 60.);
 
 	UniversalJumpscareSprite* unjus = nullptr;
@@ -57,7 +70,7 @@ public:
 
 	double timePassed = 0;
 
-	bool jumpscareOnConstantTimer = false;
+	bool jumpscareOnRandomTimer = false;
 	bool jumpscareOnClick = false;
 	bool jumpscareOnDeath = false;
 
@@ -77,7 +90,7 @@ public:
 		instance->jumpscareFadeOutTime = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutTime")), .01f, 15.f);
 		instance->jumpscareFadeOutDelay = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutDelay")), .0f, 15.f);
 		instance->probabilityFrequency = std::clamp<double>(Mod::get()->getSettingValue<double>("probabilityFrequency"), (1. / 60.), 1000);
-		instance->jumpscareOnConstantTimer = Mod::get()->getSettingValue<bool>("jumpscareOnConstantTimer");
+		instance->jumpscareOnRandomTimer = Mod::get()->getSettingValue<bool>("jumpscareOnRandomTimer");
 		instance->jumpscareOnClick = Mod::get()->getSettingValue<bool>("jumpscareOnClick");
 		instance->jumpscareOnDeath = Mod::get()->getSettingValue<bool>("jumpscareOnDeath");
 		Manager::calculateProbability(Mod::get()->getSettingValue<int64_t>("probabilityNumerator"), Mod::get()->getSettingValue<int64_t>("probabilityDenominator"));

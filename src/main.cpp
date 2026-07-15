@@ -99,8 +99,8 @@ $on_mod(Loaded) {
 			Utils::addUNJUS(Mod::get()->getSettingValue<std::filesystem::path>("jumpscareImage"));
 		}
 	});
-	listenForSettingChanges<bool>("jumpscareOnConstantTimer", [](const bool jumpscareOnConstantTimer) {
-		Manager::get()->jumpscareOnConstantTimer = jumpscareOnConstantTimer;
+	listenForSettingChanges<bool>("jumpscareOnRandomTimer", [](const bool jumpscareOnRandomTimer) {
+		Manager::get()->jumpscareOnRandomTimer = jumpscareOnRandomTimer;
 	});
 	listenForSettingChanges<bool>("jumpscareOnClick", [](const bool jumpscareOnClick) {
 		Manager::get()->jumpscareOnClick = jumpscareOnClick;
