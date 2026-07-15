@@ -6,4 +6,6 @@ protected:
 public:
 	static UniversalJumpscareSprite* create(const char*);
 	void canYouHearMeCallingFromWayTheFrickDownHere(float);
+	void play();
+	void stop();
 };

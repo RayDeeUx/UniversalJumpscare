@@ -139,9 +139,9 @@ public:
 	}
 
 	static bool shouldNotJumpscare(JumpscareType jumpscare) {
-		if (jumpscare == JumpscareType::GameplayClick) return !(instance->dist(instance->rng) < instance->probabilityClickBased);
-		if (jumpscare == JumpscareType::GameplayDeath) return !(instance->dist(instance->rng) < instance->probabilityDeathBased);
-		return !(instance->dist(instance->rng) < instance->probability);
+		if (jumpscare == JumpscareType::GameplayClick) return !instance->jumpscareOnClick || !(instance->dist(instance->rng) < instance->probabilityClickBased);
+		if (jumpscare == JumpscareType::GameplayDeath) return !instance->jumpscareOnDeath || !(instance->dist(instance->rng) < instance->probabilityDeathBased);
+		return !instance->jumpscareOnRandomTimer || !(instance->dist(instance->rng) < instance->probability);
 	}
 
 	static bool acceptableAudioFileExtension(const std::filesystem::path& audioFile) {
@@ -167,9 +167,10 @@ public:
 	}
 
 	static void tryFindingCorrespondingFile(const std::filesystem::path& path, const std::string& stem, StemToPath& imageStemFilePairs, StemToPath& audioStemFilePairs, ImageToOptionalAudio& jumpscaresMap) {
+		std::error_code ea, eb;
 		if (Manager::acceptableImageFileExtension(path)) {
 			auto audioStemFilePair = audioStemFilePairs.find(stem);
-			if (audioStemFilePair != audioStemFilePairs.end() && std::filesystem::exists(audioStemFilePair->second)) {
+			if (audioStemFilePair != audioStemFilePairs.end() && std::filesystem::exists(audioStemFilePair->second, ea)) {
 				jumpscaresMap.emplace(path, audioStemFilePair->second);
 				audioStemFilePairs.erase(audioStemFilePair);
 			} else {
@@ -177,7 +178,7 @@ public:
 			}
 		} else if (Manager::acceptableAudioFileExtension(path)) {
 			auto imageStemFilePair = imageStemFilePairs.find(stem);
-			if (imageStemFilePair != imageStemFilePairs.end() && std::filesystem::exists(imageStemFilePair->second)) {
+			if (imageStemFilePair != imageStemFilePairs.end() && std::filesystem::exists(imageStemFilePair->second, eb)) {
 				jumpscaresMap.emplace(imageStemFilePair->second, path);
 				imageStemFilePairs.erase(imageStemFilePair);
 			} else {
@@ -187,14 +188,15 @@ public:
 	}
 
 	static void checkSubDirectoryForJumpscare(const std::filesystem::directory_entry& dirEntry, ImageToOptionalAudio& jumpscaresMap) {
-		if (!std::filesystem::is_directory(dirEntry)) return;
+		std::error_code ea, eb, ec, ed;
+		if (!std::filesystem::is_directory(dirEntry, ea)) return;
 		std::filesystem::path imageFile {};
 		std::filesystem::path audioFile {};
 		bool imageFound = false;
 		bool audioFound = false;
 
 		for (const auto& subFile : std::filesystem::directory_iterator(dirEntry.path())) {
-			if (!std::filesystem::is_regular_file(subFile)) continue;
+			if (!std::filesystem::is_regular_file(subFile, eb)) continue;
 			const std::filesystem::path& subPath = subFile.path();
 			const std::string& stem = geode::utils::string::pathToString(subPath.stem());
 			if (!imageFound && stem == "jumpscare" && Manager::acceptableImageFileExtension(subPath)) {
@@ -208,26 +210,27 @@ public:
 			if (imageFound && audioFound) break;
 		}
 
-		if (imageFound && std::filesystem::exists(imageFile)) {
-			jumpscaresMap.emplace(imageFile, (audioFound && std::filesystem::exists(audioFile)) ? audioFile : std::filesystem::path{});
+		if (imageFound && std::filesystem::exists(imageFile, ec)) {
+			jumpscaresMap.emplace(imageFile, (audioFound && std::filesystem::exists(audioFile, ed)) ? audioFile : std::filesystem::path{});
 		}
 	}
 
 	static void loadJumpscaresFrom(const std::filesystem::path& folder, ImageToOptionalAudio& jumpscaresMap) {
-		if (!std::filesystem::exists(folder) || !std::filesystem::is_directory(folder)) return;
+		std::error_code ea, eb, ec, ed, ee, ef, eg, eh;
+		if (!std::filesystem::exists(folder, ea) || !std::filesystem::is_directory(folder, eb)) return;
 
 		StemToPath knownImageFiles;
 		StemToPath knownAudioFiles;
 
 		for (const auto& entry : std::filesystem::directory_iterator(folder)) {
-			if (!std::filesystem::exists(entry)) continue;
+			if (!std::filesystem::exists(entry, ec)) continue;
 
-			if (std::filesystem::is_directory(entry)) {
+			if (std::filesystem::is_directory(entry, ed)) {
 				Manager::checkSubDirectoryForJumpscare(entry, jumpscaresMap);
 				continue;
 			}
 
-			if (!std::filesystem::is_regular_file(entry)) continue;
+			if (!std::filesystem::is_regular_file(entry, ee)) continue;
 
 			const auto path = entry.path();
 			const auto stem = geode::utils::string::pathToString(path.stem());
@@ -239,7 +242,7 @@ public:
 
 		for (const auto& [stem, imageFile] : knownImageFiles) {
 			auto audioStemFilePair = knownAudioFiles.find(stem);
-			if (audioStemFilePair != knownAudioFiles.end() && std::filesystem::exists(imageFile) && std::filesystem::exists(audioStemFilePair->second)) {
+			if (audioStemFilePair != knownAudioFiles.end() && std::filesystem::exists(imageFile, ef) && std::filesystem::exists(audioStemFilePair->second, eg)) {
 				jumpscaresMap.emplace(imageFile, audioStemFilePair->second);
 				knownAudioFiles.erase(audioStemFilePair);
 				toRemove.push_back(stem);
@@ -252,7 +255,7 @@ public:
 			if (stem == "background" && geode::utils::string::pathToString(imagePath.extension()) == ".png" && geode::utils::string::endsWith(geode::utils::string::pathToString(imagePath.parent_path()), "weebify.jumpscare")) {
 				continue;
 			}
-			if (std::filesystem::exists(imagePath)) jumpscaresMap.emplace(imagePath, std::filesystem::path{});
+			if (std::filesystem::exists(imagePath, eh)) jumpscaresMap.emplace(imagePath, std::filesystem::path{});
 		}
 	}
 

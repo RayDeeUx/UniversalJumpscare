@@ -28,28 +28,12 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 	const bool wasVisible = unjus->isVisible();
 	Utils::handleUNJUS();
 	const bool currentlyVisible = unjus->isVisible();
+	unjus->setUserFlag("should-hide"_spr, wasVisible != currentlyVisible);
 
 	Manager* manager = Manager::get();
 
 	if (unjus->numberOfRunningActions() > 0 && !unjus->getActionByTag(20260104)) {
-		if (manager->forceHideIfJumpscareStillActive && wasVisible != currentlyVisible) {
-			unjus->stopAllActions();
-			unjus->setOpacity(0);
-			manager->channel->stop();
-			if (manager->unjusIsAnimated) {
-				imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(unjus);
-				animSprite->setCurrentFrame(0);
-				animSprite->stop();
-			}
-		} else if (manager->unjusIsAnimated) {
-			imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(unjus);
-			if (animSprite->getCurrentFrame() > animSprite->getFrameCount() - 3) {
-				unjus->stopAllActions();
-				animSprite->stop();
-				animSprite->setCurrentFrame(animSprite->getFrameCount() - 1); // stop on last frame to avoid visually jarring transitons
-				unjus->runAction(CCFadeOut::create(manager->jumpscareFadeOutTime))->setTag(20260104);
-			}
-		}
+		unjus->stop();
 		return;
 	}
 
@@ -67,7 +51,13 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 	manager->timePassed += dt;
 	if (!unjus->isVisible() || manager->timePassed < manager->probabilityFrequency) return;
 	if (Manager::shouldNotJumpscare(JumpscareType::RandomTimer)) return;
-	if (!manager->jumpscareOnRandomTimer) return;
+
+	unjus->play();
+}
+
+void UniversalJumpscareSprite::play() {
+	Manager* manager = Manager::get();
+	UniversalJumpscareSprite* unjus = Utils::getUNJUS();
 
 	manager->channel->stop();
 	if (manager->unjusIsAnimated) {
@@ -85,11 +75,36 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 	CCSequence* seqnce = CCSequence::create(delay, fadeOut, nullptr);
 	unjus->runAction(seqnce);
 
-	if (!manager->sound || !std::filesystem::exists(manager->currentAudio)) {
+	std::error_code ec;
+	if (!manager->sound || !std::filesystem::exists(manager->currentAudio, ec)) {
 		if (Mod::get()->isLoggingEnabled()) log::info("manager->sound not found. if manager->currentAudio ({}) is NOT empty, report this.", geode::utils::string::pathToString(manager->currentAudio));
 		return;
 	}
 
 	manager->system->playSound(manager->sound, nullptr, false, &manager->channel);
 	manager->channel->setVolume(manager->jumpscareAudioVolume);
+}
+
+void UniversalJumpscareSprite::stop() {
+	Manager* manager = Manager::get();
+	UniversalJumpscareSprite* unjus = Utils::getUNJUS();
+
+	if (manager->forceHideIfJumpscareStillActive && unjus->getUserFlag("should-hide"_spr)) {
+		unjus->stopAllActions();
+		unjus->setOpacity(0);
+		manager->channel->stop();
+		if (manager->unjusIsAnimated) {
+			imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(unjus);
+			animSprite->setCurrentFrame(0);
+			animSprite->stop();
+		}
+	} else if (manager->unjusIsAnimated) {
+		imgp::AnimatedSprite* animSprite = imgp::AnimatedSprite::from(unjus);
+		if (animSprite->getCurrentFrame() > animSprite->getFrameCount() - 3) {
+			unjus->stopAllActions();
+			animSprite->stop();
+			animSprite->setCurrentFrame(animSprite->getFrameCount() - 1); // stop on last frame to avoid visually jarring transitons
+			unjus->runAction(CCFadeOut::create(manager->jumpscareFadeOutTime))->setTag(20260104);
+		}
+	}
 }
