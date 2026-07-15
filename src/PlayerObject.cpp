@@ -21,7 +21,5 @@ class $modify(MyPlayerObject, PlayerObject) {
 		if (Utils::modEnabled() && this->isPlayer1() && this->m_isDead && this->m_gameLayer && !this->m_gameLayer->m_isEditor && unjus->isVisible() && !unjus->shouldStop() && !Manager::shouldNotJumpscare(JumpscareType::GameplayDeath)) {
 			unjus->play(static_cast<int>(JumpscareType::GameplayDeath)); // the enum is there to prevent timer from being unintentionally reset
 		}
-
-		return ret;
 	}
 };
