@@ -20,6 +20,7 @@ add_library(${PROJECT_NAME} SHARED
     src/Utils.hpp
     src/UniversalJumpscareSprite.hpp
     src/UniversalJumpscareSprite.cpp
+    src/PlayerObject.cpp
     src/MenuLayer.cpp
     src/main.cpp
     # Add any extra C++ source files here

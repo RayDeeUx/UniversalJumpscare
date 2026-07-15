@@ -39,7 +39,7 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 	if (!unjus->isVisible() || manager->timePassed < manager->probabilityFrequency) return;
 	if (Manager::shouldNotJumpscare(JumpscareType::RandomTimer)) return;
 
-	unjus->play();
+	unjus->play(JumpscareType::RandomTimer);
 }
 
 bool UniversalJumpscareSprite::shouldStop() {
@@ -67,7 +67,7 @@ bool UniversalJumpscareSprite::randomizeOrStillNonZeroOpacity() {
 	return false;
 }
 
-void UniversalJumpscareSprite::play() {
+void UniversalJumpscareSprite::play(JumpscareType jumpscare) {
 	Manager* manager = Manager::get();
 	UniversalJumpscareSprite* unjus = Utils::getUNJUS();
 
@@ -80,7 +80,7 @@ void UniversalJumpscareSprite::play() {
 	}
 	unjus->setOpacity(255);
 	if (manager->randomizeJumpscares) unjus->setTag(20260104);
-	manager->timePassed = 0.;
+	if (jumpscare == JumpscareType::RandomTimer) manager->timePassed = 0.;
 
 	CCDelayTime* delay = CCDelayTime::create(!manager->unjusIsAnimated ? manager->jumpscareFadeOutDelay : 2123456789.f);
 	CCFadeOut* fadeOut = CCFadeOut::create(!manager->unjusIsAnimated ? manager->jumpscareFadeOutTime : 2123456789.f);

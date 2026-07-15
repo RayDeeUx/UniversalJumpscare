@@ -8,6 +8,6 @@ public:
 	void canYouHearMeCallingFromWayTheFrickDownHere(float);
 	bool randomizeOrStillNonZeroOpacity();
 	bool shouldStop();
-	void play();
+	void play(JumpscareType jumpscare);
 	void stop();
 };
