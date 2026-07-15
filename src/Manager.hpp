@@ -12,9 +12,9 @@ typedef std::unordered_map<std::string, std::filesystem::path> StemToPath;
 typedef std::unordered_map<std::filesystem::path, std::filesystem::path> ImageToOptionalAudio;
 
 enum class JumpscareType {
-	RandomTimer,
-	GameplayClick,
-	GameplayDeath
+	RandomTimer = 0,
+	GameplayClick = 1,
+	GameplayDeath = 2
 };
 
 class Manager {
