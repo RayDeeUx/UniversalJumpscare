@@ -80,11 +80,15 @@ public:
 		instance->jumpscareOnConstantTimer = Mod::get()->getSettingValue<bool>("jumpscareOnConstantTimer");
 		instance->jumpscareOnClick = Mod::get()->getSettingValue<bool>("jumpscareOnClick");
 		instance->jumpscareOnDeath = Mod::get()->getSettingValue<bool>("jumpscareOnDeath");
+		Manager::calculateProbability(Mod::get()->getSettingValue<int64_t>("probabilityNumerator"), Mod::get()->getSettingValue<int64_t>("probabilityDenominator"));
 	}
 
 	static void calculateProbability(const int64_t numerator, const int64_t denominator) {
-		instance->numerator = std::clamp<int64_t>(numerator, 1, 1000000);
-		instance->denominator = std::clamp<int64_t>(denominator, 2, 1000000);
+		const int numeratorClamped = std::clamp<int64_t>(numerator, 1, 1000000);
+		const int denominatorClamped = std::clamp<int64_t>(denominator, 2, 1000000);
+		if (instance->numerator == numeratorClamped && instance->denominator == denominatorClamped) return;
+		instance->numerator = numeratorClamped;
+		instance->denominator = denominatorClamped;
 		instance->probability = static_cast<double>(instance->numerator) / static_cast<double>(instance->denominator);
 		if (instance->probability < 1.f && instance->probability > 0.f) return;
 		instance->numerator = 1;
