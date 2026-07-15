@@ -34,11 +34,23 @@ $on_mod(Loaded) {
 		Manager::get()->currentImage = path;
 		Utils::addUNJUS(path);
 	});
+	listenForSettingChanges<int64_t>("probabilityNumeratorClickBased", [](const int64_t newNumeratorClickBased) {
+		Manager::calculateProbability(newNumeratorClickBased, Mod::get()->getSettingValue<int64_t>("probabilityDenominatorClickBased"), JumpscareType::GameplayClick);
+	});
+	listenForSettingChanges<int64_t>("probabilityDenominatorClickBased", [](const int64_t newDenominatorClickBased) {
+		Manager::calculateProbability(Mod::get()->getSettingValue<int64_t>("probabilityNumeratorClickBased"), newDenominatorClickBased, JumpscareType::GameplayClick);
+	});
+	listenForSettingChanges<int64_t>("probabilityNumeratorDeathBased", [](const int64_t newNumeratorDeathBased) {
+		Manager::calculateProbability(newNumeratorDeathBased, Mod::get()->getSettingValue<int64_t>("probabilityDenominatorDeathBased"), JumpscareType::GameplayDeath);
+	});
+	listenForSettingChanges<int64_t>("probabilityDenominatorDeathBased", [](const int64_t newDenominatorDeathBased) {
+		Manager::calculateProbability(Mod::get()->getSettingValue<int64_t>("probabilityNumeratorDeathBased"), newDenominatorDeathBased, JumpscareType::GameplayDeath);
+	});
 	listenForSettingChanges<int64_t>("probabilityNumerator", [](const int64_t newNumerator) {
-		Manager::calculateProbability(newNumerator, Mod::get()->getSettingValue<int64_t>("probabilityDenominator"));
+		Manager::calculateProbability(newNumerator, Mod::get()->getSettingValue<int64_t>("probabilityDenominator"), JumpscareType::RandomTimer);
 	});
 	listenForSettingChanges<int64_t>("probabilityDenominator", [](const int64_t newDenominator) {
-		Manager::calculateProbability(Mod::get()->getSettingValue<int64_t>("probabilityNumerator"), newDenominator);
+		Manager::calculateProbability(Mod::get()->getSettingValue<int64_t>("probabilityNumerator"), newDenominator, JumpscareType::RandomTimer);
 	});
 	listenForSettingChanges<double>("probabilityFrequency", [](const double probabilityFrequency) {
 		Manager::get()->probabilityFrequency = std::clamp<double>(probabilityFrequency, .016667, 1000);

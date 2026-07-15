@@ -81,7 +81,9 @@ namespace Utils {
 		newSprite->setOpacity(0);
 		newSprite->setPosition(CCScene::get()->getContentSize() / 2.f);
 
-		Manager::calculateProbability(Utils::getInt("probabilityNumerator"), Utils::getInt("probabilityDenominator"));
+		Manager::calculateProbability(Utils::getInt("probabilityNumerator"), Utils::getInt("probabilityDenominator"), JumpscareType::RandomTimer);
+		Manager::calculateProbability(Utils::getInt("probabilityNumeratorClickBased"), Utils::getInt("probabilityDenominatorClickBased"), JumpscareType::GameplayClick);
+		Manager::calculateProbability(Utils::getInt("probabilityNumeratorDeathBased"), Utils::getInt("probabilityDenominatorDeathBased"), JumpscareType::GameplayDeath);
 		if (Utils::getBool("logging")) log::info("UNJUS added");
 	}
 

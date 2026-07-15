@@ -11,6 +11,12 @@ using namespace geode::prelude;
 typedef std::unordered_map<std::string, std::filesystem::path> StemToPath;
 typedef std::unordered_map<std::filesystem::path, std::filesystem::path> ImageToOptionalAudio;
 
+enum class JumpscareType {
+	RandomTimer,
+	GameplayClick,
+	GameplayDeath
+};
+
 class Manager {
 
 protected:
@@ -28,11 +34,6 @@ public:
 	int64_t numerator = 1;
 	int64_t denominator = 10000;
 	double probability = static_cast<double>(numerator) / static_cast<double>(denominator);
-
-	// "probabilityNumeratorClickBased"
-	// "probabilityDenominatorClickBased"
-	// "probabilityNumeratorDeathBased"
-	// "probabilityDenominatorDeathBased"
 
 	int64_t numeratorClickBased = 1;
 	int64_t denominatorClickBased = 10000;
@@ -93,12 +94,39 @@ public:
 		instance->jumpscareOnRandomTimer = Mod::get()->getSettingValue<bool>("jumpscareOnRandomTimer");
 		instance->jumpscareOnClick = Mod::get()->getSettingValue<bool>("jumpscareOnClick");
 		instance->jumpscareOnDeath = Mod::get()->getSettingValue<bool>("jumpscareOnDeath");
-		Manager::calculateProbability(Mod::get()->getSettingValue<int64_t>("probabilityNumerator"), Mod::get()->getSettingValue<int64_t>("probabilityDenominator"));
+		Manager::calculateProbability(Mod::get()->getSettingValue<int64_t>("probabilityNumerator"), Mod::get()->getSettingValue<int64_t>("probabilityDenominator"), JumpscareType::RandomTimer);
+		Manager::calculateProbability(Mod::get()->getSettingValue<int64_t>("probabilityNumeratorClickBased"), Mod::get()->getSettingValue<int64_t>("probabilityDenominatorClickBased"), JumpscareType::GameplayClick);
+		Manager::calculateProbability(Mod::get()->getSettingValue<int64_t>("probabilityNumeratorDeathBased"), Mod::get()->getSettingValue<int64_t>("probabilityDenominatorDeathBased"), JumpscareType::GameplayDeath);
 	}
 
-	static void calculateProbability(const int64_t numerator, const int64_t denominator) {
-		const int numeratorClamped = std::clamp<int64_t>(numerator, 1, 1000000);
-		const int denominatorClamped = std::clamp<int64_t>(denominator, 2, 1000000);
+	static void calculateProbability(const int64_t numerator, const int64_t denominator, JumpscareType jumpscare) {
+		const int64_t numeratorClamped = std::clamp<int64_t>(numerator, 1, 1000000);
+		const int64_t denominatorClamped = std::clamp<int64_t>(denominator, 2, 1000000);
+
+		if (jumpscare == JumpscareType::GameplayClick) {
+			if (instance->numeratorClickBased == numeratorClamped && instance->denominatorClickBased == denominatorClamped) return;
+			instance->numeratorClickBased = numeratorClamped;
+			instance->denominatorClickBased = denominatorClamped;
+			instance->probabilityClickBased = static_cast<double>(instance->numeratorClickBased) / static_cast<double>(instance->denominatorClickBased);
+			if (instance->probabilityClickBased < 1.f && instance->probabilityClickBased > 0.f) return;
+			instance->numeratorClickBased = 1;
+			instance->denominatorClickBased = 10000;
+			instance->probabilityClickBased = static_cast<double>(instance->numeratorClickBased) / static_cast<double>(instance->denominatorClickBased);
+			return MDPopup::create("A \"friendly\" \"warning\" from UniversalJumpscare", "The probability for <cl>click-based jumpscares</c> has been <c-ff0000>***__forcibly reset__***</c> to <cj>1</c> out of <co>10000</c>.\n\n# <c-ff0000>***__Don't try any more funny business if you know what's good for you.__***</c>", "I Understand")->show();
+		}
+
+		if (jumpscare == JumpscareType::GameplayDeath) {
+			if (instance->numeratorDeathBased == numeratorClamped && instance->denominatorDeathBased == denominatorClamped) return;
+			instance->numeratorDeathBased = numeratorClamped;
+			instance->denominatorDeathBased = denominatorClamped;
+			instance->probabilityDeathBased = static_cast<double>(instance->numeratorDeathBased) / static_cast<double>(instance->denominatorDeathBased);
+			if (instance->probabilityDeathBased < 1.f && instance->probabilityDeathBased > 0.f) return;
+			instance->numeratorDeathBased = 1;
+			instance->denominatorDeathBased = 10000;
+			instance->probabilityDeathBased = static_cast<double>(instance->numeratorDeathBased) / static_cast<double>(instance->denominatorDeathBased);
+			return MDPopup::create("A \"friendly\" \"warning\" from UniversalJumpscare", "The probability for <cl>death-based jumpscares</c> has been <c-ff0000>***__forcibly reset__***</c> to <cj>1</c> out of <co>10000</c>.\n\n# <c-ff0000>***__Don't try any more funny business if you know what's good for you.__***</c>", "I Understand")->show();
+		}
+
 		if (instance->numerator == numeratorClamped && instance->denominator == denominatorClamped) return;
 		instance->numerator = numeratorClamped;
 		instance->denominator = denominatorClamped;
@@ -107,10 +135,12 @@ public:
 		instance->numerator = 1;
 		instance->denominator = 10000;
 		instance->probability = static_cast<double>(instance->numerator) / static_cast<double>(instance->denominator);
-		MDPopup::create("A \"friendly\" \"warning\" from UniversalJumpscare", "The probability has been <c-ff0000>***__forcibly reset__***</c> to <cj>1</c> out of <co>10000</c>.\n\n# <c-ff0000>***__Don't try any more funny business if you know what's good for you.__***</c>", "I Understand")->show();
+		MDPopup::create("A \"friendly\" \"warning\" from UniversalJumpscare", "The probability for <cl>random timer jumpscares</c> has been <c-ff0000>***__forcibly reset__***</c> to <cj>1</c> out of <co>10000</c>.\n\n# <c-ff0000>***__Don't try any more funny business if you know what's good for you.__***</c>", "I Understand")->show();
 	}
 
-	static bool shouldNotJumpscare() {
+	static bool shouldNotJumpscare(JumpscareType jumpscare) {
+		if (jumpscare == JumpscareType::GameplayClick) return !(instance->dist(instance->rng) < instance->probabilityClickBased);
+		if (jumpscare == JumpscareType::GameplayDeath) return !(instance->dist(instance->rng) < instance->probabilityDeathBased);
 		return !(instance->dist(instance->rng) < instance->probability);
 	}
 

@@ -66,7 +66,7 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 
 	manager->timePassed += dt;
 	if (!unjus->isVisible() || manager->timePassed < manager->probabilityFrequency) return;
-	if (Manager::shouldNotJumpscare()) return;
+	if (Manager::shouldNotJumpscare(JumpscareType::RandomTimer)) return;
 	if (!manager->jumpscareOnRandomTimer) return;
 
 	manager->channel->stop();
