@@ -12,10 +12,11 @@ $on_mod(Loaded) {
 	Manager::loadStuff(); // avoid segfaults
 	Mod::get()->setLoggingEnabled(Mod::get()->getSettingValue<bool>("logging"));
 
-	if (!std::filesystem::exists(Mod::get()->getConfigDir())) std::filesystem::create_directory(Mod::get()->getConfigDir());
+	std::error_code ea, eb, ec;
+	if (!std::filesystem::exists(Mod::get()->getConfigDir(), eb)) std::filesystem::create_directory(Mod::get()->getConfigDir(), ec);
 
 	const std::filesystem::path& jumpscareAudio = Mod::get()->getSettingValue<std::filesystem::path>("jumpscareAudio");
-	if (std::filesystem::exists(jumpscareAudio) && Manager::acceptableAudioFileExtension(jumpscareAudio)) {
+	if (std::filesystem::exists(jumpscareAudio, ea) && Manager::acceptableAudioFileExtension(jumpscareAudio)) {
 		manager->currentAudio = jumpscareAudio;
 		manager->system->createSound(geode::utils::string::pathToString(jumpscareAudio).c_str(), FMOD_DEFAULT, nullptr, &manager->sound);
 	}
@@ -97,6 +98,15 @@ $on_mod(Loaded) {
 			Utils::removeUNJUS();
 			Utils::addUNJUS(Mod::get()->getSettingValue<std::filesystem::path>("jumpscareImage"));
 		}
+	});
+	listenForSettingChanges<bool>("jumpscareOnConstantTimer", [](const bool jumpscareOnConstantTimer) {
+		Manager::get()->jumpscareOnConstantTimer = jumpscareOnConstantTimer;
+	});
+	listenForSettingChanges<bool>("jumpscareOnClick", [](const bool jumpscareOnClick) {
+		Manager::get()->jumpscareOnClick = jumpscareOnClick;
+	});
+	listenForSettingChanges<bool>("jumpscareOnDeath", [](const bool jumpscareOnDeath) {
+		Manager::get()->jumpscareOnDeath = jumpscareOnDeath;
 	});
 	listenForSettingChanges<bool>("enabled", [](const bool enabled) {
 		Utils::removeUNJUS();

@@ -57,6 +57,10 @@ public:
 
 	double timePassed = 0;
 
+	bool jumpscareOnConstantTimer = false;
+	bool jumpscareOnClick = false;
+	bool jumpscareOnDeath = false;
+
 	static Manager* get() {
 		if (!instance) instance = new Manager();
 		return instance;
@@ -73,17 +77,20 @@ public:
 		instance->jumpscareFadeOutTime = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutTime")), .01f, 15.f);
 		instance->jumpscareFadeOutDelay = std::clamp<float>(static_cast<float>(Mod::get()->getSettingValue<double>("jumpscareFadeOutDelay")), .0f, 15.f);
 		instance->probabilityFrequency = std::clamp<double>(Mod::get()->getSettingValue<double>("probabilityFrequency"), (1. / 60.), 1000);
+		instance->jumpscareOnConstantTimer = Mod::get()->getSettingValue<bool>("jumpscareOnConstantTimer");
+		instance->jumpscareOnClick = Mod::get()->getSettingValue<bool>("jumpscareOnClick");
+		instance->jumpscareOnDeath = Mod::get()->getSettingValue<bool>("jumpscareOnDeath");
 	}
 
 	static void calculateProbability(const int64_t numerator, const int64_t denominator) {
 		instance->numerator = std::clamp<int64_t>(numerator, 1, 1000000);
 		instance->denominator = std::clamp<int64_t>(denominator, 2, 1000000);
 		instance->probability = static_cast<double>(instance->numerator) / static_cast<double>(instance->denominator);
-		if (instance->probability < 1.f) return;
+		if (instance->probability < 1.f && instance->probability > 0.f) return;
 		instance->numerator = 1;
 		instance->denominator = 10000;
 		instance->probability = static_cast<double>(instance->numerator) / static_cast<double>(instance->denominator);
-		MDPopup::create("A friendly warning from UniversalJumpscare", "The probability has been <c-ff0000>***__forcibly reset__***</c> to <cj>1</c> out of <co>10000</c>.\n\n<c-ff0000>***__Don't try any more funny business if you know what's good for you.__***</c>", "I Understand")->show();
+		MDPopup::create("A \"friendly\" \"warning\" from UniversalJumpscare", "The probability has been <c-ff0000>***__forcibly reset__***</c> to <cj>1</c> out of <co>10000</c>.\n\n# <c-ff0000>***__Don't try any more funny business if you know what's good for you.__***</c>", "I Understand")->show();
 	}
 
 	static bool shouldNotJumpscare() {
@@ -91,12 +98,14 @@ public:
 	}
 
 	static bool acceptableAudioFileExtension(const std::filesystem::path& audioFile) {
-		if (!std::filesystem::exists(audioFile) || std::filesystem::is_directory(audioFile)) return false;
+		std::error_code eb, ec;
+		if (!std::filesystem::exists(audioFile, eb) || std::filesystem::is_directory(audioFile, ec)) return false;
 		return instance->audioExtensions.contains(geode::utils::string::pathToString(audioFile.extension()));
 	}
 
 	static bool acceptableImageFileExtension(const std::filesystem::path& imageFile) {
-		if (!std::filesystem::exists(imageFile) || std::filesystem::is_directory(imageFile)) return false;
+		std::error_code eb, ec;
+		if (!std::filesystem::exists(imageFile, eb) || std::filesystem::is_directory(imageFile, ec)) return false;
 		return instance->imageExtensions.contains(geode::utils::string::pathToString(imageFile.extension()));
 	}
 

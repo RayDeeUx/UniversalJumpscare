@@ -1,5 +1,5 @@
 {
-	"geode": "5.0.0-beta.4",
+	"geode": "5.8.2",
 	"gd": {
 		"win": "2.2081",
 		"mac": "2.2081",
@@ -8,7 +8,7 @@
 	},
 	"id": "raydeeux.universaljumpscare",
 	"name": "UniversalFoxyJumpscare",
-	"version": "v1.1.3",
+	"version": "v1.2.0",
 	"developer": "RayDeeUx",
 	"description": "A jumpscare that can pop up anywhere. Comes with GIF support!",
 	"repository": "https://github.com/RayDeeUx/UniversalJumpscare",
@@ -128,8 +128,27 @@
 			"min": 0,
 			"max": 100
 		},
-		"jumpscare-probability-header": {
-			"name": "Jumpscare Probability",
+		"jumpscare-conditions-header": {
+			"name": "Jumpscare Conditions",
+			"type": "title"
+		},
+		"jumpscareOnConstantTimer": {
+			"name": "Jumpscares on Random Timer",
+			"type": "bool",
+			"default": true
+		},
+		"jumpscareOnClick": {
+			"name": "Jumpscares on Gameplay Click",
+			"type": "bool",
+			"default": false
+		},
+		"jumpscareOnDeath": {
+			"name": "Jumpscares on Gameplay Death",
+			"type": "bool",
+			"default": false
+		},
+		"random-timer-jumpscare-probability-header": {
+			"name": "Random Timer Jumpscare Probability",
 			"type": "title"
 		},
 		"probabilityNumerator": {
@@ -236,7 +255,7 @@
 		],
 		"sprites": [
 			"resources/jumpscare.png",
-			"resources/foxy.png"
+			"resources/foxy.gif"
 		]
 	},
 	"issues": {
