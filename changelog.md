@@ -1,4 +1,9 @@
 # UniversalFoxyJumpscare Changelog
+## v1.2.0-beta.1
+- Trigger jumpscares on click (inspired by, but not directly copied from, NicknameGG's RobTop Jumpscares mod) and on death (inspired by, but not directly copied from, Weebify's Jumpscare mod).
+  - Individual probabilities exist for both types of jumpscares. Fiddle around and see what works for you!
+- Recategorized some settings to adjust to the newly introduced jumpscare trigger types.
+- <co>This version may have bugs!</c>
 ## v1.1.3
 - Rename the mod to UniversalFoxyJumpscare in a (hopefully) meaningful attempt to hint to others that a jumpscare mod with transparent animated sprite support already exists on the index.
 - Update the mod resources to include Foxy from FNAF2.
