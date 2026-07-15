@@ -32,27 +32,38 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 
 	Manager* manager = Manager::get();
 
-	if (unjus->numberOfRunningActions() > 0 && !unjus->getActionByTag(20260104)) {
-		unjus->stop();
-		return;
-	}
-
-	if (manager->randomizeJumpscares && unjus->getTag() == 20260104) {
-		if (unjus->getOpacity() > 0) return;
-
-		unjus->setTag(20260105); // flag sprite for removal
-		Loader::get()->queueInMainThread([unjus, manager]() {
-			Utils::replaceUNJUS(unjus, manager);
-		});
-
-		return;
-	}
+	if (unjus->shouldStop()) return;
+	if (unjus->randomizeOrStillNonZeroOpacity()) return;
 
 	manager->timePassed += dt;
 	if (!unjus->isVisible() || manager->timePassed < manager->probabilityFrequency) return;
 	if (Manager::shouldNotJumpscare(JumpscareType::RandomTimer)) return;
 
 	unjus->play();
+}
+
+bool UniversalJumpscareSprite::shouldStop() {
+	if (unjus->numberOfRunningActions() > 0 && !unjus->getActionByTag(20260104)) {
+		unjus->stop();
+		return true;
+	}
+	return false;
+}
+
+bool UniversalJumpscareSprite::randomizeOrStillNonZeroOpacity() {
+	Manager* manager = Manager::get();
+	UniversalJumpscareSprite* unjus = Utils::getUNJUS();
+	if (manager->randomizeJumpscares && unjus->getTag() == 20260104) {
+		if (unjus->getOpacity() > 0) return true;
+
+		unjus->setTag(20260105); // flag sprite for removal
+		Loader::get()->queueInMainThread([unjus, manager]() {
+			Utils::replaceUNJUS(unjus, manager);
+		});
+
+		return true;
+	}
+	return false;
 }
 
 void UniversalJumpscareSprite::play() {
@@ -107,4 +118,5 @@ void UniversalJumpscareSprite::stop() {
 			unjus->runAction(CCFadeOut::create(manager->jumpscareFadeOutTime))->setTag(20260104);
 		}
 	}
+	unjus->setUserFlag("should-hide"_spr, false);
 }

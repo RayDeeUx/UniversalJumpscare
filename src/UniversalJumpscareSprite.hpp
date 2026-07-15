@@ -6,6 +6,8 @@ protected:
 public:
 	static UniversalJumpscareSprite* create(const char*);
 	void canYouHearMeCallingFromWayTheFrickDownHere(float);
+	bool randomizeOrStillNonZeroOpacity();
+	bool shouldStop();
 	void play();
 	void stop();
 };
