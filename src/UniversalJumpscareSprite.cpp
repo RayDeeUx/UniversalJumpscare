@@ -43,6 +43,7 @@ void UniversalJumpscareSprite::canYouHearMeCallingFromWayTheFrickDownHere(float 
 }
 
 bool UniversalJumpscareSprite::shouldStop() {
+	UniversalJumpscareSprite* unjus = Utils::getUNJUS();
 	if (unjus->numberOfRunningActions() > 0 && !unjus->getActionByTag(20260104)) {
 		unjus->stop();
 		return true;
