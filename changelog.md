@@ -1,4 +1,6 @@
 # UniversalFoxyJumpscare Changelog
+## v1.2.0-beta.2
+- As expected, a crash happened. Silly me for not checking in on it sooner.
 ## v1.2.0-beta.1
 - Trigger jumpscares on click (inspired by, but not directly copied from, NicknameGG's RobTop Jumpscares mod) and on death (inspired by, but not directly copied from, Weebify's Jumpscare mod).
   - Individual probabilities exist for both types of jumpscares. Fiddle around and see what works for you!

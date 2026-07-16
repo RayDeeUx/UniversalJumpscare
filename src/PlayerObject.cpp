@@ -8,7 +8,7 @@ class $modify(MyPlayerObject, PlayerObject) {
 		bool ret = PlayerObject::pushButton(button);
 		UniversalJumpscareSprite* unjus = Utils::getUNJUS();
 
-		if (Utils::modEnabled() && this->isPlayer1() && button == PlayerButton::Jump && this->m_gameLayer && !this->m_gameLayer->m_isEditor && unjus->isVisible() && unjus->getOpacity() == 0 && !unjus->shouldStop() && !Manager::shouldNotJumpscare(JumpscareType::GameplayClick)) {
+		if (Utils::modEnabled() && this->isPlayer1() && button == PlayerButton::Jump && this->m_gameLayer && !this->m_gameLayer->m_isEditor && unjus && unjus->isVisible() && unjus->getOpacity() == 0 && !unjus->shouldStop() && !Manager::shouldNotJumpscare(JumpscareType::GameplayClick)) {
 			unjus->play(static_cast<int>(JumpscareType::GameplayClick)); // the enum is there to prevent timer from being unintentionally reset
 		}
 
@@ -18,7 +18,7 @@ class $modify(MyPlayerObject, PlayerObject) {
 		PlayerObject::playerDestroyed(noEffects);
 		UniversalJumpscareSprite* unjus = Utils::getUNJUS();
 
-		if (Utils::modEnabled() && this->isPlayer1() && this->m_isDead && this->m_gameLayer && !this->m_gameLayer->m_isEditor && unjus->isVisible() && unjus->getOpacity() == 0 && !unjus->shouldStop() && !Manager::shouldNotJumpscare(JumpscareType::GameplayDeath)) {
+		if (Utils::modEnabled() && this->isPlayer1() && this->m_isDead && this->m_gameLayer && !this->m_gameLayer->m_isEditor && unjus->isVisible() && unjus && unjus->getOpacity() == 0 && !unjus->shouldStop() && !Manager::shouldNotJumpscare(JumpscareType::GameplayDeath)) {
 			unjus->play(static_cast<int>(JumpscareType::GameplayDeath)); // the enum is there to prevent timer from being unintentionally reset
 		}
 	}
